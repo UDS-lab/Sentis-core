@@ -242,7 +242,7 @@
         function loadSavedConfig() {
             const savedKey = localStorage.getItem('sentis_gemini_key');
             const savedClient = localStorage.getItem('sentis_client_name') || "Apex Systems";
-            const savedKnowledge = localStorage.getItem('sentis_knowledge'] || "";
+            const savedKnowledge = localStorage.getItem('sentis_knowledge') || "";
 
             if (savedKey) document.getElementById('apiKeyInput').value = savedKey;
             document.getElementById('clientNameInput').value = savedClient;
