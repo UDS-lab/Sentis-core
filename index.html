@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENTIS OS | Autonomous Enterprise System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#090a0f',
+                        cardbg: '#11131f',
+                        bordercolor: '#1e2238',
+                        accent: '#6366f1',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #090a0f; }
+        ::-webkit-scrollbar-thumb { background: #1e2238; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-bordercolor bg-cardbg/80 backdrop-blur px-4 md:px-6 py-3.5 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 bg-indigo-500 rounded-full animate-pulse shadow-lg shadow-indigo-500/50"></div>
+            <span class="text-lg md:text-xl font-bold tracking-wider text-white">SENTIS<span class="text-indigo-400 text-xs ml-1 font-mono">v1.0</span></span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <div class="relative">
+                <input type="password" id="apiKey" placeholder="Gemini API Key" class="bg-darkbg border border-bordercolor text-xs px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500 text-gray-200 w-36 md:w-56 transition">
+                <button onclick="saveKey()" class="absolute right-1 top-1/2 -translate-y-1/2 bg-indigo-600 hover:bg-indigo-500 text-[10px] text-white px-2 py-1 rounded transition">Save</button>
+            </div>
+            <span id="keyStatus" class="text-[10px] px-2 py-1 bg-red-950/60 text-red-400 border border-red-800/40 rounded-full font-medium hidden md:inline">No Key</span>
+        </div>
+    </header>
+
+    <!-- App Body -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-16 md:w-64 border-r border-bordercolor bg-cardbg p-2 md:p-4 flex flex-col space-y-2 shrink-0">
+            <p class="text-[10px] uppercase tracking-widest text-gray-500 font-semibold px-2 mb-1 hidden md:block">Core Modules</p>
+            
+            <button onclick="switchTab('support')" class="tab-btn w-full text-left p-2.5 md:px-3.5 md:py-3 rounded-xl text-sm font-medium transition bg-indigo-600 text-white flex items-center justify-center md:justify-start space-x-3" data-tab="support">
+                <span>💬</span> <span class="hidden md:inline">Sentis Support</span>
+            </button>
+            <button onclick="switchTab('inbox')" class="tab-btn w-full text-left p-2.5 md:px-3.5 md:py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-bordercolor/50 hover:text-white flex items-center justify-center md:justify-start space-x-3" data-tab="inbox">
+                <span>✉️</span> <span class="hidden md:inline">Sentis Inbox</span>
+            </button>
+            <button onclick="switchTab('qualify')" class="tab-btn w-full text-left p-2.5 md:px-3.5 md:py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-bordercolor/50 hover:text-white flex items-center justify-center md:justify-start space-x-3" data-tab="qualify">
+                <span>🎯</span> <span class="hidden md:inline">Sentis Qualify</span>
+            </button>
+            <button onclick="switchTab('proposal')" class="tab-btn w-full text-left p-2.5 md:px-3.5 md:py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-bordercolor/50 hover:text-white flex items-center justify-center md:justify-start space-x-3" data-tab="proposal">
+                <span>📄</span> <span class="hidden md:inline">Sentis Proposal</span>
+            </button>
+            <button onclick="switchTab('sync')" class="tab-btn w-full text-left p-2.5 md:px-3.5 md:py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-bordercolor/50 hover:text-white flex items-center justify-center md:justify-start space-x-3" data-tab="sync">
+                <span>🧠</span> <span class="hidden md:inline">Sentis Sync</span>
+            </button>
+            <button onclick="switchTab('call')" class="tab-btn w-full text-left p-2.5 md:px-3.5 md:py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-bordercolor/50 hover:text-white flex items-center justify-center md:justify-start space-x-3" data-tab="call">
+                <span>🎙️</span> <span class="hidden md:inline">Sentis Call</span>
+            </button>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-darkbg flex flex-col">
+            <div id="module-container" class="max-w-4xl w-full mx-auto flex flex-col flex-1 space-y-4">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Script Execution -->
+    <script>
+        const modules = {
+            support: {
+                title: "Sentis Support",
+                tagline: "24/7 AI Customer Support Engine",
+                placeholder: "Type or paste customer inquiry here...",
+                systemPrompt: "You are Sentis Support, an enterprise AI support agent. Answer customer questions concisely, professionally, and accurately."
+            },
+            inbox: {
+                title: "Sentis Inbox",
+                tagline: "Email Summarizer & Smart Reply Engine",
+                placeholder: "Paste customer email or thread...",
+                systemPrompt: "You are Sentis Inbox. Provide: 1) Executive Summary (2 sentences max) and 2) A high-converting professional reply draft."
+            },
+            qualify: {
+                title: "Sentis Qualify",
+                tagline: "Lead Scoring & Budget Intent Filter",
+                placeholder: "Paste prospect details, call notes, or form submission...",
+                systemPrompt: "You are Sentis Qualify. Evaluate this lead. Output: 1) Intent Score (1-10), 2) Estimated Budget Tier, 3) Key Selling Angle, 4) Immediate Action Item."
+            },
+            proposal: {
+                title: "Sentis Proposal",
+                tagline: "Instant Commercial Contract & Scope Builder",
+                placeholder: "Paste raw meeting notes, scope requirements, or client requests...",
+                systemPrompt: "You are Sentis Proposal. Turn these raw details into a structured commercial proposal outline including Scope of Work, Deliverables, Timeline, and Pricing Model."
+            },
+            sync: {
+                title: "Sentis Sync",
+                tagline: "Internal Knowledge & SOP Co-Pilot",
+                placeholder: "Ask an internal process or SOP question...",
+                systemPrompt: "You are Sentis Sync, an internal knowledge base assistant. Provide exact step-by-step guidance based on standard business operating procedures."
+            },
+            call: {
+                title: "Sentis Call",
+                tagline: "Executive Meeting Intelligence Hub",
+                placeholder: "Paste meeting transcript or call summary...",
+                systemPrompt: "You are Sentis Call. Analyze this meeting text and extract: 1) Key Decisions Made, 2) Client Objections/Risks, 3) Next Steps & Assigned Action Items."
+            }
+        };
+
+        let activeTab = 'support';
+
+        // Auto Load Saved API Key from LocalStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = localStorage.getItem('sentis_gemini_key');
+            if (savedKey) {
+                document.getElementById('apiKey').value = savedKey;
+                updateKeyStatus(true);
+            }
+            renderModule();
+        });
+
+        function saveKey() {
+            const key = document.getElementById('apiKey').value.trim();
+            if (key) {
+                localStorage.setItem('sentis_gemini_key', key);
+                updateKeyStatus(true);
+                alert("API Key saved securely to your browser!");
+            } else {
+                localStorage.removeItem('sentis_gemini_key');
+                updateKeyStatus(false);
+            }
+        }
+
+        function updateKeyStatus(isSet) {
+            const statusEl = document.getElementById('keyStatus');
+            if (isSet) {
+                statusEl.innerText = "Key Active";
+                statusEl.className = "text-[10px] px-2 py-1 bg-emerald-950/60 text-emerald-400 border border-emerald-800/40 rounded-full font-medium hidden md:inline";
+            } else {
+                statusEl.innerText = "No Key";
+                statusEl.className = "text-[10px] px-2 py-1 bg-red-950/60 text-red-400 border border-red-800/40 rounded-full font-medium hidden md:inline";
+            }
+        }
+
+        function switchTab(tabKey) {
+            activeTab = tabKey;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.dataset.tab === tabKey) {
+                    btn.className = "tab-btn w-full text-left p-2.5 md:px-3.5 md:py-3 rounded-xl text-sm font-medium transition bg-indigo-600 text-white flex items-center justify-center md:justify-start space-x-3 shadow-lg shadow-indigo-600/20";
+                } else {
+                    btn.className = "tab-btn w-full text-left p-2.5 md:px-3.5 md:py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-bordercolor/50 hover:text-white flex items-center justify-center md:justify-start space-x-3";
+                }
+            });
+            renderModule();
+        }
+
+        function renderModule() {
+            const mod = modules[activeTab];
+            const container = document.getElementById('module-container');
+            container.innerHTML = `
+                <div class="flex items-center justify-between border-b border-bordercolor pb-4">
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-bold text-white tracking-wide">${mod.title}</h1>
+                        <p class="text-xs md:text-sm text-gray-400 mt-0.5">${mod.tagline}</p>
+                    </div>
+                    <span class="text-xs px-3 py-1 bg-indigo-950/80 text-indigo-300 border border-indigo-800/50 rounded-full font-mono hidden sm:inline">Module: ${activeTab.toUpperCase()}</span>
+                </div>
+
+                <div class="flex flex-col space-y-4 flex-1">
+                    <textarea id="userInput" rows="5" class="w-full bg-cardbg border border-bordercolor rounded-2xl p-4 text-sm focus:outline-none focus:border-indigo-500 text-gray-200 placeholder-gray-600 transition resize-none" placeholder="${mod.placeholder}"></textarea>
+
+                    <button onclick="runSentisCore()" id="execBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white font-medium py-3.5 rounded-2xl transition shadow-lg shadow-indigo-600/25 text-sm flex items-center justify-center space-x-2">
+                        <span>⚡ Run ${mod.title}</span>
+                    </button>
+
+                    <div class="flex flex-col flex-1 pt-2">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] uppercase tracking-widest text-gray-500 font-semibold">Cognitive Stream Output</span>
+                            <span id="loader" class="text-xs text-indigo-400 font-mono hidden animate-pulse">Processing...</span>
+                        </div>
+                        <div id="outputResult" class="w-full min-h-[180px] bg-cardbg border border-bordercolor rounded-2xl p-4 text-sm text-gray-300 whitespace-pre-wrap font-mono leading-relaxed overflow-y-auto">Awaiting command execution...</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function runSentisCore() {
+            const apiKey = document.getElementById('apiKey').value.trim() || localStorage.getItem('sentis_gemini_key');
+            const inputVal = document.getElementById('userInput').value.trim();
+            const outputBox = document.getElementById('outputResult');
+            const loader = document.getElementById('loader');
+            const execBtn = document.getElementById('execBtn');
+
+            if (!apiKey) {
+                outputBox.innerText = "❌ ERROR: Please enter and save your Gemini API Key in the top header.";
+                return;
+            }
+            if (!inputVal) {
+                outputBox.innerText = "⚠️ WARNING: Please input data before executing.";
+                return;
+            }
+
+            // UI Loading State
+            loader.classList.remove('hidden');
+            execBtn.disabled = true;
+            execBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            outputBox.innerText = "⚡ Sentis Core initialized...\n📡 Routing payload to Gemini 2.5 Flash API endpoint...\n⏳ Synthesizing intelligence stream...";
+
+            const mod = modules[activeTab];
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [
+                            {
+                                parts: [
+                                    { text: `${mod.systemPrompt}\n\nUSER INPUT:\n"${inputVal}"` }
+                                ]
+                            }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    outputBox.innerText = `❌ API ERROR [${data.error.code}]: ${data.error.message}`;
+                } else {
+                    const resultText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    outputBox.innerText = resultText || "⚠️ Empty response returned from model.";
+                }
+
+            } catch (err) {
+                outputBox.innerText = "❌ NETWORK/EXECUTION ERROR: " + err.message;
+            } finally {
+                loader.classList.add('hidden');
+                execBtn.disabled = false;
+                execBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+    </script>
+</body>
+</html>
