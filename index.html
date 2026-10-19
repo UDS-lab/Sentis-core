@@ -4,68 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SENTIS OS | Enterprise AI Operating System</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Marked.js for Markdown Formatting -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkbg: '#05070a',
-                        cardbg: 'rgba(15, 20, 32, 0.75)',
-                        bordercolor: 'rgba(255, 255, 255, 0.08)',
-                        accent: '#6366f1',
-                    }
-                }
-            }
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#05070a', cardbg: 'rgba(15, 20, 32, 0.75)', bordercolor: 'rgba(255, 255, 255, 0.08)', accent: '#6366f1' } } } }
     </script>
     <style>
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #05070a; }
-        ::-webkit-scrollbar-thumb { background: #1e2640; border-radius: 10px; }
-        .glass-card {
-            background: rgba(15, 22, 36, 0.65);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-        .glow-indigo {
-            box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.3);
-        }
+        ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: #05070a; } ::-webkit-scrollbar-thumb { background: #1e2640; border-radius: 10px; }
+        .glass-card { background: rgba(15, 22, 36, 0.65); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+        .glow-indigo { box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.3); }
     </style>
 </head>
 <body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
 
-    <!-- Top Navigation Header -->
     <header class="border-b border-bordercolor bg-darkbg/90 backdrop-blur-xl px-4 md:px-8 py-3.5 flex justify-between items-center sticky top-0 z-50">
         <div class="flex items-center space-x-4">
             <div class="flex items-center space-x-3">
-                <div class="relative flex items-center justify-center">
-                    <div class="w-3.5 h-3.5 bg-indigo-500 rounded-full animate-ping absolute opacity-75"></div>
-                    <div class="w-3 h-3 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/80"></div>
-                </div>
-                <span class="text-xl font-extrabold tracking-wider text-white font-mono">SENTIS<span class="text-indigo-400 text-xs ml-1 font-mono font-normal bg-indigo-950/80 px-2 py-0.5 rounded-full border border-indigo-800/50">PRO v3.0</span></span>
+                <div class="w-3 h-3 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/80"></div>
+                <span class="text-xl font-extrabold tracking-wider text-white font-mono">SENTIS<span class="text-indigo-400 text-xs ml-1 font-mono font-normal bg-indigo-950/80 px-2 py-0.5 rounded-full border border-indigo-800/50">PRO v3.2</span></span>
             </div>
-            
             <span class="hidden lg:inline-block text-gray-600">|</span>
-            
-            <!-- Dynamic Client Brand Banner -->
             <div class="hidden lg:flex items-center space-x-2 text-xs text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
                 <i class="fa-solid fa-building text-indigo-400"></i>
                 <span>Tenant:</span>
                 <span id="displayClientName" class="text-white font-semibold">Apex Systems</span>
             </div>
         </div>
-
-        <!-- Controls & Keys -->
-        <div class="flex items-center space-x-3">
+        <div>
             <button onclick="toggleSettingsModal()" class="text-xs bg-white/5 hover:bg-white/10 text-gray-300 px-3 py-2 rounded-xl border border-white/10 transition flex items-center space-x-2">
                 <i class="fa-solid fa-sliders text-indigo-400"></i>
                 <span class="hidden sm:inline">Brand & Key Config</span>
@@ -73,482 +39,206 @@
         </div>
     </header>
 
-    <!-- App Body -->
     <div class="flex flex-1 overflow-hidden">
-        
-        <!-- Sidebar Navigation -->
         <aside class="w-16 md:w-72 border-r border-bordercolor bg-darkbg/90 p-3 md:p-5 flex flex-col justify-between shrink-0">
             <div class="space-y-6">
                 <div>
                     <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold px-3 mb-3 hidden md:block">Modules Hub</p>
                     <nav class="space-y-1.5">
                         <button onclick="switchTab('support')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between bg-indigo-600 text-white shadow-lg shadow-indigo-600/30" data-tab="support">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-headset text-base"></i>
-                                <span class="hidden md:inline font-semibold">Support Brain</span>
-                            </div>
+                            <div class="flex items-center space-x-3"><i class="fa-solid fa-headset text-base"></i><span class="hidden md:inline font-semibold">Support Brain</span></div>
                             <span class="hidden md:inline text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-mono">24/7</span>
                         </button>
-
                         <button onclick="switchTab('inbox')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white" data-tab="inbox">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-inbox text-base"></i>
-                                <span class="hidden md:inline font-semibold">Inbox Command</span>
-                            </div>
+                            <div class="flex items-center space-x-3"><i class="fa-solid fa-inbox text-base"></i><span class="hidden md:inline font-semibold">Inbox Command</span></div>
                         </button>
-
                         <button onclick="switchTab('qualify')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white" data-tab="qualify">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-filter text-base"></i>
-                                <span class="hidden md:inline font-semibold">Lead Qualify</span>
-                            </div>
+                            <div class="flex items-center space-x-3"><i class="fa-solid fa-filter text-base"></i><span class="hidden md:inline font-semibold">Lead Qualify</span></div>
                         </button>
-
                         <button onclick="switchTab('proposal')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white" data-tab="proposal">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-file-contract text-base"></i>
-                                <span class="hidden md:inline font-semibold">Deal Proposal</span>
-                            </div>
+                            <div class="flex items-center space-x-3"><i class="fa-solid fa-file-contract text-base"></i><span class="hidden md:inline font-semibold">Deal Proposal</span></div>
                         </button>
-
                         <button onclick="switchTab('sync')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white" data-tab="sync">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-brain text-base"></i>
-                                <span class="hidden md:inline font-semibold">SOP Knowledge</span>
-                            </div>
+                            <div class="flex items-center space-x-3"><i class="fa-solid fa-brain text-base"></i><span class="hidden md:inline font-semibold">SOP Knowledge</span></div>
                         </button>
-
                         <button onclick="switchTab('call')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white" data-tab="call">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-microphone-lines text-base"></i>
-                                <span class="hidden md:inline font-semibold">Call Intel</span>
-                            </div>
+                            <div class="flex items-center space-x-3"><i class="fa-solid fa-microphone-lines text-base"></i><span class="hidden md:inline font-semibold">Call Intel</span></div>
                         </button>
                     </nav>
                 </div>
             </div>
-
-            <!-- Client Status Card in Sidebar -->
-            <div class="hidden md:block glass-card p-4 rounded-2xl border border-white/5">
-                <div class="flex items-center space-x-3 mb-2">
-                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-ping"></div>
-                    <span class="text-xs font-semibold text-gray-300">System Telemetry</span>
-                </div>
-                <div class="space-y-1.5 text-[11px] text-gray-500 font-mono">
-                    <div class="flex justify-between"><span>Model:</span><span class="text-gray-300">Gemini 2.5 Flash</span></div>
-                    <div class="flex justify-between"><span>Security:</span><span class="text-emerald-400">Encrypted SSL</span></div>
-                </div>
-            </div>
         </aside>
 
-        <!-- Main Workspace Area -->
         <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-darkbg flex flex-col">
-            <div id="module-container" class="max-w-5xl w-full mx-auto flex flex-col flex-1 space-y-6">
-                <!-- Dynamically populated via JS -->
-            </div>
+            <div id="module-container" class="max-w-5xl w-full mx-auto flex flex-col flex-1 space-y-6"></div>
         </main>
     </div>
 
-    <!-- Settings / Branding Modal -->
     <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="glass-card max-w-md w-full p-6 rounded-3xl border border-white/10 space-y-5">
             <div class="flex justify-between items-center border-b border-white/10 pb-4">
-                <h3 class="text-lg font-bold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-gears text-indigo-400"></i>
-                    <span>Enterprise & Key Configuration</span>
-                </h3>
+                <h3 class="text-lg font-bold text-white flex items-center space-x-2"><i class="fa-solid fa-gears text-indigo-400"></i><span>Enterprise Configuration</span></h3>
                 <button onclick="toggleSettingsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
             <div class="space-y-4">
                 <div>
                     <label class="text-xs font-semibold text-gray-400 block mb-1.5">Client / Business Name</label>
-                    <input type="text" id="clientNameInput" placeholder="e.g. Apex Logistics Corp" class="w-full bg-darkbg border border-white/10 text-sm p-3 rounded-xl focus:outline-none focus:border-indigo-500 text-white">
+                    <input type="text" id="clientNameInput" placeholder="e.g. Apex Logistics" class="w-full bg-darkbg border border-white/10 text-sm p-3 rounded-xl focus:outline-none focus:border-indigo-500 text-white">
                 </div>
-
                 <div>
                     <label class="text-xs font-semibold text-gray-400 block mb-1.5">Gemini API Key</label>
                     <input type="password" id="apiKeyInput" placeholder="AI Studio API Key" class="w-full bg-darkbg border border-white/10 text-sm p-3 rounded-xl focus:outline-none focus:border-indigo-500 text-white">
                 </div>
-
                 <div>
-                    <label class="text-xs font-semibold text-gray-400 block mb-1.5">Custom Knowledge Base / Client Rules</label>
-                    <textarea id="knowledgeInput" rows="3" placeholder="Paste return policies, pricing, or SOP details here so the AI answers accurately..." class="w-full bg-darkbg border border-white/10 text-xs p-3 rounded-xl focus:outline-none focus:border-indigo-500 text-gray-300 resize-none"></textarea>
+                    <label class="text-xs font-semibold text-gray-400 block mb-1.5">Custom Knowledge Base / Rules</label>
+                    <textarea id="knowledgeInput" rows="3" placeholder="Paste return policies, pricing, or SOP details..." class="w-full bg-darkbg border border-white/10 text-xs p-3 rounded-xl focus:outline-none focus:border-indigo-500 text-gray-300 resize-none"></textarea>
                 </div>
             </div>
-
             <div class="pt-2 flex justify-end space-x-3">
-                <button onclick="toggleSettingsModal()" class="px-4 py-2.5 text-xs font-medium text-gray-400 hover:text-white">Cancel</button>
-                <button onclick="saveSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition shadow-lg shadow-indigo-600/30">Save Configuration</button>
+                <button onclick="toggleSettingsModal()" class="px-4 py-2.5 text-xs font-medium text-gray-400">Cancel</button>
+                <button onclick="saveSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-600/30">Save Configuration</button>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Execution Engine -->
     <script>
         const modules = {
-            support: {
-                title: "Support Brain",
-                tagline: "Autonomous Customer Experience & Query Resolution Engine",
-                icon: "fa-headset",
-                placeholder: "Type or paste customer inquiry here...",
-                systemPrompt: "You are the primary Customer Support AI for this business. Answer precisely, empathetically, and accurately based on company guidelines."
-            },
-            inbox: {
-                title: "Inbox Command",
-                tagline: "Email Summarizer & High-Converting Draft Generator",
-                icon: "fa-inbox",
-                placeholder: "Paste incoming customer email or long message thread...",
-                systemPrompt: "You are an executive email assistant. Output: 1) Executive 2-sentence Summary, 2) Sentiment Rating, 3) High-converting response draft."
-            },
-            qualify: {
-                title: "Lead Qualify Engine",
-                tagline: "Inbound Prospect Scoring & Intent Intelligence",
-                icon: "fa-filter",
-                placeholder: "Paste prospect details, form submissions, or meeting inquiry...",
-                systemPrompt: "You are an enterprise sales qualifier. Output: 1) Lead Intent Score (1-10), 2) Estimated Budget Tier, 3) Primary Pain Point, 4) Recommended Closing Strategy."
-            },
-            proposal: {
-                title: "Deal Proposal Generator",
-                tagline: "Automated Scope of Work & Pricing Contract Builder",
-                icon: "fa-file-contract",
-                placeholder: "Paste raw client meeting notes or project requirements...",
-                systemPrompt: "You are an enterprise deal consultant. Turn these raw notes into a high-end commercial proposal complete with Scope, Key Deliverables, Timeline, and Pricing Strategy."
-            },
-            sync: {
-                title: "SOP Knowledge Co-Pilot",
-                tagline: "Internal Process & Policy Guidance System",
-                icon: "fa-brain",
-                placeholder: "Ask any internal operational or SOP question...",
-                systemPrompt: "You are the internal operations co-pilot. Provide exact step-by-step guidance adhering strictly to company standard operating procedures."
-            },
-            call: {
-                title: "Call Intelligence Hub",
-                tagline: "Executive Transcript Analyzer & Action Extractor",
-                icon: "fa-microphone-lines",
-                placeholder: "Paste call transcript or audio summary log...",
-                systemPrompt: "You are an executive chief of staff. Analyze this call log and extract: 1) Key Decisions Made, 2) Risk & Objections Raised, 3) Action Items assigned to team members."
-            }
+            support: { title: "Support Brain", tagline: "Autonomous Customer Experience Engine", icon: "fa-headset", placeholder: "Type customer inquiry...", systemPrompt: "You are the primary Customer Support AI for this business. Answer precisely and empathetically." },
+            inbox: { title: "Inbox Command", tagline: "Email Summarizer & Response Generator", icon: "fa-inbox", placeholder: "Paste incoming customer email...", systemPrompt: "You are an executive email assistant. Output: 1) Summary, 2) Sentiment, 3) Response Draft." },
+            qualify: { title: "Lead Qualify Engine", tagline: "Inbound Prospect Intent Scoring", icon: "fa-filter", placeholder: "Paste lead or form details...", systemPrompt: "You are an enterprise sales qualifier. Output: 1) Intent Score (1-10), 2) Budget Tier, 3) Closing Strategy." },
+            proposal: { title: "Deal Proposal Generator", tagline: "Automated Commercial Contract Builder", icon: "fa-file-contract", placeholder: "Paste raw meeting notes...", systemPrompt: "You are an enterprise deal consultant. Generate a commercial proposal outline with Scope, Deliverables, and Pricing." },
+            sync: { title: "SOP Knowledge Co-Pilot", tagline: "Internal Policy Guidance System", icon: "fa-brain", placeholder: "Ask any internal operational question...", systemPrompt: "You are the internal operations co-pilot. Provide exact step-by-step guidance." },
+            call: { title: "Call Intelligence Hub", tagline: "Transcript Analyzer & Action Extractor", icon: "fa-microphone-lines", placeholder: "Paste call transcript...", systemPrompt: "You are an executive chief of staff. Extract: 1) Key Decisions, 2) Risks, 3) Action Items." }
         };
 
         let activeTab = 'support';
-        let supportViewMode = 'admin'; // 'admin' or 'customer'
+        let supportViewMode = 'admin';
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSavedConfig();
-            renderModule();
-        });
+        window.addEventListener('DOMContentLoaded', () => { loadSavedConfig(); renderModule(); });
 
         function loadSavedConfig() {
-            const savedKey = localStorage.getItem('sentis_gemini_key');
-            const savedClient = localStorage.getItem('sentis_client_name') || "Apex Systems";
-            const savedKnowledge = localStorage.getItem('sentis_knowledge') || "";
-
-            if (savedKey) document.getElementById('apiKeyInput').value = savedKey;
-            document.getElementById('clientNameInput').value = savedClient;
-            document.getElementById('knowledgeInput').value = savedKnowledge;
-            document.getElementById('displayClientName').innerText = savedClient;
+            document.getElementById('apiKeyInput').value = localStorage.getItem('sentis_gemini_key') || "";
+            document.getElementById('clientNameInput').value = localStorage.getItem('sentis_client_name') || "Apex Systems";
+            document.getElementById('knowledgeInput').value = localStorage.getItem('sentis_knowledge') || "";
+            document.getElementById('displayClientName').innerText = localStorage.getItem('sentis_client_name') || "Apex Systems";
         }
 
-        function toggleSettingsModal() {
-            const modal = document.getElementById('settingsModal');
-            modal.classList.toggle('hidden');
-        }
+        function toggleSettingsModal() { document.getElementById('settingsModal').classList.toggle('hidden'); }
 
         function saveSettings() {
-            const key = document.getElementById('apiKeyInput').value.trim();
-            const client = document.getElementById('clientNameInput').value.trim() || "Default Business";
-            const knowledge = document.getElementById('knowledgeInput').value.trim();
-
-            if (key) localStorage.setItem('sentis_gemini_key', key);
-            localStorage.setItem('sentis_client_name', client);
-            localStorage.setItem('sentis_knowledge', knowledge);
-
-            document.getElementById('displayClientName').innerText = client;
+            localStorage.setItem('sentis_gemini_key', document.getElementById('apiKeyInput').value.trim());
+            localStorage.setItem('sentis_client_name', document.getElementById('clientNameInput').value.trim() || "Apex Systems");
+            localStorage.setItem('sentis_knowledge', document.getElementById('knowledgeInput').value.trim());
+            document.getElementById('displayClientName').innerText = localStorage.getItem('sentis_client_name');
             toggleSettingsModal();
             renderModule();
+            alert("🚀 Tenant configuration saved successfully!");
         }
 
         function switchTab(tabKey) {
-            activeTab = tabKey;
-            supportViewMode = 'admin'; // Reset to admin on tab switch
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                if(btn.dataset.tab === tabKey) {
-                    btn.className = "tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between bg-indigo-600 text-white shadow-lg shadow-indigo-600/30";
-                } else {
-                    btn.className = "tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white";
-                }
+            activeTab = tabKey; supportViewMode = 'admin';
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.className = b.dataset.tab === tabKey ? "tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between bg-indigo-600 text-white shadow-lg shadow-indigo-600/30" : "tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white";
             });
             renderModule();
         }
 
-        function setSupportMode(mode) {
-            supportViewMode = mode;
-            renderModule();
-        }
+        function setSupportMode(m) { supportViewMode = m; renderModule(); }
+        function copyWidgetLink() { navigator.clipboard.writeText(window.location.href); alert("📋 Live widget link copied!"); }
 
         function renderModule() {
             const mod = modules[activeTab];
-            const clientName = localStorage.getItem('sentis_client_name'] || "Apex Systems";
+            const clientName = localStorage.getItem('sentis_client_name') || "Apex Systems";
             const container = document.getElementById('module-container');
             
-            // Special dual-view handling for Support Module
-            if (activeTab === 'support') {
-                if (supportViewMode === 'admin') {
-                    container.innerHTML = `
-                        <!-- Module Header Card -->
-                        <div class="glass-card p-6 rounded-3xl border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-12 h-12 bg-indigo-600/20 border border-indigo-500/30 rounded-2xl flex items-center justify-center text-indigo-400 text-xl shadow-inner">
-                                    <i class="fa-solid ${mod.icon}"></i>
-                                </div>
-                                <div>
-                                    <div class="flex items-center space-x-2">
-                                        <h1 class="text-2xl font-bold text-white tracking-tight">${clientName} — Support Brain</h1>
-                                        <span class="text-[10px] bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 px-2.5 py-0.5 rounded-full font-mono uppercase">Admin Mode</span>
-                                    </div>
-                                    <p class="text-xs text-gray-400 mt-1">${mod.tagline}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <button onclick="setSupportMode('customer')" class="bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 text-xs px-4 py-2.5 rounded-xl transition font-semibold flex items-center space-x-2">
-                                    <i class="fa-solid fa-users-viewfinder"></i>
-                                    <span>Preview Customer Widget</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Input Workspace Card -->
-                        <div class="glass-card p-6 rounded-3xl border border-white/10 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <label class="text-xs font-semibold text-gray-300 flex items-center space-x-2">
-                                    <i class="fa-solid fa-terminal text-indigo-400"></i>
-                                    <span>Internal Agent Test Console</span>
-                                </label>
-                                <span class="text-[11px] text-gray-500 font-mono">Gemini 2.5 Flash Endpoint</span>
-                            </div>
-
-                            <textarea id="userInput" rows="4" class="w-full bg-darkbg/90 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none focus:border-indigo-500 text-gray-200 placeholder-gray-600 transition resize-none leading-relaxed" placeholder="${mod.placeholder}"></textarea>
-
-                            <button onclick="runSentisCore()" id="execBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white font-semibold py-4 rounded-2xl transition shadow-xl shadow-indigo-600/25 text-sm flex items-center justify-center space-x-3 glow-indigo">
-                                <i class="fa-solid fa-bolt text-indigo-200"></i>
-                                <span>Test Support Response</span>
-                            </button>
-                        </div>
-
-                        <!-- Output Display Card -->
-                        <div class="glass-card p-6 rounded-3xl border border-white/10 flex-1 flex flex-col space-y-3">
-                            <div class="flex items-center justify-between border-b border-white/5 pb-3">
-                                <span class="text-xs font-semibold text-gray-300 flex items-center space-x-2">
-                                    <i class="fa-solid fa-microchip text-indigo-400"></i>
-                                    <span>AI Response Output</span>
-                                </span>
-                                <span id="loader" class="text-xs text-indigo-400 font-mono hidden animate-pulse flex items-center space-x-2">
-                                    <i class="fa-solid fa-circle-notch fa-spin"></i>
-                                    <span>Generating...</span>
-                                </span>
-                            </div>
-
-                            <div id="outputResult" class="w-full flex-1 min-h-[180px] text-sm text-gray-300 leading-relaxed overflow-y-auto font-sans">
-                                <div class="h-full flex flex-col items-center justify-center text-gray-600 space-y-2 py-8">
-                                    <i class="fa-solid fa-layer-group text-2xl opacity-40"></i>
-                                    <p class="text-xs font-mono">Awaiting test query...</p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    // CUSTOMER WIDGET VIEW MODE
-                    container.innerHTML = `
-                        <div class="glass-card p-4 md:p-6 rounded-3xl border border-white/10 flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
-                                <div>
-                                    <h2 class="text-sm font-bold text-white">Live Customer Support Widget (${clientName})</h2>
-                                    <p class="text-[11px] text-gray-400">This is what your client's customers see when they ask a question.</p>
-                                </div>
-                            </div>
-                            <button onclick="setSupportMode('admin')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-4 py-2 rounded-xl transition font-medium">
-                                <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Admin
-                            </button>
-                        </div>
-
-                        <!-- Simulated Embedded Customer Chat Window -->
-                        <div class="glass-card rounded-3xl border border-white/10 flex flex-col flex-1 overflow-hidden shadow-2xl">
-                            <!-- Widget Header -->
-                            <div class="bg-darkbg/80 border-b border-white/10 px-6 py-4 flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md">
-                                        ${clientName.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <h3 class="text-sm font-bold text-white">${clientName} Support</h3>
-                                        <p class="text-[10px] text-emerald-400 flex items-center space-x-1.5">
-                                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
-                                            <span>AI Agent Online 24/7</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <span class="text-[10px] bg-white/5 text-gray-400 px-2.5 py-1 rounded-lg border border-white/5 font-mono">Powered by Sentis</span>
-                            </div>
-
-                            <!-- Chat Messages Area -->
-                            <div id="customerChatBox" class="flex-1 p-6 overflow-y-auto space-y-4 min-h-[300px] max-h-[450px]">
-                                <div class="flex items-start space-x-3">
-                                    <div class="w-7 h-7 bg-indigo-600/30 border border-indigo-500/40 rounded-lg flex items-center justify-center text-indigo-300 text-xs shrink-0 font-bold">AI</div>
-                                    <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-gray-200 max-w-lg leading-relaxed">
-                                        Hello! Welcome to <strong>${clientName}</strong>. How can I help you with our products, shipping, or policies today?
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Chat Input Bar -->
-                            <div class="p-4 bg-darkbg/90 border-t border-white/10 flex items-center space-x-3">
-                                <input type="text" id="customerInput" onkeypress="handleCustomerKey(event)" placeholder="Ask a question as a customer..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 text-white placeholder-gray-500">
-                                <button onclick="sendCustomerMessage()" id="customerSendBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 rounded-xl text-xs font-semibold transition shadow-md shadow-indigo-600/30 flex items-center space-x-2">
-                                    <span>Send</span>
-                                    <i class="fa-solid fa-paper-plane text-[10px]"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-            } else {
-                // Render other modules normally
+            if (activeTab === 'support' && supportViewMode === 'customer') {
                 container.innerHTML = `
-                    <!-- Module Header Card -->
-                    <div class="glass-card p-6 rounded-3xl border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-12 h-12 bg-indigo-600/20 border border-indigo-500/30 rounded-2xl flex items-center justify-center text-indigo-400 text-xl shadow-inner">
-                                <i class="fa-solid ${mod.icon}"></i>
-                            </div>
-                            <div>
-                                <div class="flex items-center space-x-2">
-                                    <h1 class="text-2xl font-bold text-white tracking-tight">${mod.title}</h1>
-                                    <span class="text-[10px] bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 px-2.5 py-0.5 rounded-full font-mono uppercase">${clientName}</span>
-                                </div>
-                                <p class="text-xs text-gray-400 mt-1">${mod.tagline}</p>
-                            </div>
+                    <div class="glass-card p-4 rounded-3xl border border-white/10 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
+                            <span class="text-sm font-bold text-white">Live Customer Support Widget (${clientName})</span>
                         </div>
+                        <button onclick="setSupportMode('admin')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-4 py-2 rounded-xl">Back to Admin</button>
                     </div>
-
-                    <!-- Input Workspace Card -->
-                    <div class="glass-card p-6 rounded-3xl border border-white/10 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs font-semibold text-gray-300 flex items-center space-x-2">
-                                <i class="fa-solid fa-terminal text-indigo-400"></i>
-                                <span>Data Stream Input</span>
-                            </label>
-                            <span class="text-[11px] text-gray-500 font-mono">Gemini 2.5 Flash Endpoint</span>
+                    <div class="glass-card rounded-3xl border border-white/10 flex flex-col flex-1 overflow-hidden shadow-2xl">
+                        <div class="bg-darkbg/80 border-b border-white/10 px-6 py-4 flex items-center justify-between">
+                            <span class="text-sm font-bold text-white">${clientName} Support</span>
+                            <span class="text-[10px] bg-white/5 text-gray-400 px-2 py-1 rounded">Powered by Sentis</span>
                         </div>
-
-                        <textarea id="userInput" rows="5" class="w-full bg-darkbg/90 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none focus:border-indigo-500 text-gray-200 placeholder-gray-600 transition resize-none leading-relaxed" placeholder="${mod.placeholder}"></textarea>
-
-                        <button onclick="runSentisCore()" id="execBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white font-semibold py-4 rounded-2xl transition shadow-xl shadow-indigo-600/25 text-sm flex items-center justify-center space-x-3 glow-indigo">
-                            <i class="fa-solid fa-bolt text-indigo-200"></i>
-                            <span>Synthesize ${mod.title}</span>
-                        </button>
-                    </div>
-
-                    <!-- Output Display Card -->
-                    <div class="glass-card p-6 rounded-3xl border border-white/10 flex-1 flex flex-col space-y-3">
-                        <div class="flex items-center justify-between border-b border-white/5 pb-3">
-                            <span class="text-xs font-semibold text-gray-300 flex items-center space-x-2">
-                                <i class="fa-solid fa-microchip text-indigo-400"></i>
-                                <span>Cognitive Output Stream</span>
-                            </span>
-                            <span id="loader" class="text-xs text-indigo-400 font-mono hidden animate-pulse flex items-center space-x-2">
-                                <i class="fa-solid fa-circle-notch fa-spin"></i>
-                                <span>Processing Intelligence...</span>
-                            </span>
-                        </div>
-
-                        <div id="outputResult" class="w-full flex-1 min-h-[200px] text-sm text-gray-300 leading-relaxed overflow-y-auto font-sans">
-                            <div class="h-full flex flex-col items-center justify-center text-gray-600 space-y-2 py-8">
-                                <i class="fa-solid fa-layer-group text-2xl opacity-40"></i>
-                                <p class="text-xs font-mono">Awaiting execution payload...</p>
+                        <div id="customerChatBox" class="flex-1 p-6 overflow-y-auto space-y-4 min-h-[300px]">
+                            <div class="flex items-start space-x-3">
+                                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-gray-200">Hello! Welcome to <strong>${clientName}</strong>. How can I assist you today?</div>
                             </div>
+                        </div>
+                        <div class="p-4 bg-darkbg/90 border-t border-white/10 flex space-x-3">
+                            <input type="text" id="customerInput" onkeypress="if(event.key==='Enter')sendCustomerMessage()" placeholder="Ask a question..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none">
+                            <button onclick="sendCustomerMessage()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 rounded-xl text-xs font-semibold">Send</button>
                         </div>
                     </div>
                 `;
+                return;
             }
+
+            container.innerHTML = `
+                <div class="glass-card p-6 rounded-3xl border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-indigo-600/20 border border-indigo-500/30 rounded-2xl flex items-center justify-center text-indigo-400 text-xl"><i class="fa-solid ${mod.icon}"></i></div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-white">${activeTab === 'support' ? clientName + ' — Support Brain' : mod.title}</h1>
+                            <p class="text-xs text-gray-400 mt-1">${mod.tagline}</p>
+                        </div>
+                    </div>
+                    ${activeTab === 'support' ? `
+                    <div class="flex space-x-2">
+                        <button onclick="copyWidgetLink()" class="bg-white/5 text-gray-300 border border-white/10 text-xs px-3.5 py-2.5 rounded-xl"><i class="fa-solid fa-copy mr-1"></i> Copy Link</button>
+                        <button onclick="setSupportMode('customer')" class="bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 text-xs px-4 py-2.5 rounded-xl font-semibold"><i class="fa-solid fa-users-viewfinder mr-1"></i> Preview Widget</button>
+                    </div>` : ''}
+                </div>
+                <div class="glass-card p-6 rounded-3xl border border-white/10 space-y-4">
+                    <textarea id="userInput" rows="5" class="w-full bg-darkbg/90 border border-white/10 rounded-2xl p-4 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-500 resize-none" placeholder="${mod.placeholder}"></textarea>
+                    <button onclick="runSentisCore()" id="execBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-4 rounded-2xl shadow-xl text-sm glow-indigo flex items-center justify-center space-x-2"><i class="fa-solid fa-bolt"></i><span>Synthesize ${mod.title}</span></button>
+                </div>
+                <div class="glass-card p-6 rounded-3xl border border-white/10 flex-1 flex flex-col space-y-3">
+                    <div class="flex justify-between border-b border-white/5 pb-3">
+                        <span class="text-xs font-semibold text-gray-300">Cognitive Output Stream</span>
+                        <span id="loader" class="text-xs text-indigo-400 font-mono hidden animate-pulse">Processing...</span>
+                    </div>
+                    <div id="outputResult" class="w-full flex-1 min-h-[200px] text-sm text-gray-300 font-sans">Awaiting execution payload...</div>
+                </div>
+            `;
         }
 
         async function runSentisCore() {
-            const apiKey = localStorage.getItem('sentis_gemini_key') || document.getElementById('apiKeyInput').value.trim();
-            const clientName = localStorage.getItem('sentis_client_name'] || "Apex Systems";
+            const apiKey = localStorage.getItem('sentis_gemini_key');
+            const clientName = localStorage.getItem('sentis_client_name') || "Apex Systems";
             const knowledge = localStorage.getItem('sentis_knowledge') || "";
             const inputVal = document.getElementById('userInput').value.trim();
             const outputBox = document.getElementById('outputResult');
             const loader = document.getElementById('loader');
-            const execBtn = document.getElementById('execBtn');
 
-            if (!apiKey) {
-                toggleSettingsModal();
-                alert("Please enter and save your Gemini API Key in the settings panel!");
-                return;
-            }
-            if (!inputVal) {
-                outputBox.innerHTML = `<div class="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-300 text-xs font-mono">⚠️ Please provide input data before running.</div>`;
-                return;
-            }
+            if (!apiKey) { toggleSettingsModal(); alert("Please save your Gemini API Key in settings!"); return; }
+            if (!inputVal) { outputBox.innerHTML = "⚠️ Please provide input data."; return; }
 
             loader.classList.remove('hidden');
-            execBtn.disabled = true;
-            execBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            outputBox.innerHTML = `
-                <div class="p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-indigo-300 text-xs font-mono animate-pulse space-y-1">
-                    <p>⚡ Sentis Core v3.0 Initialized...</p>
-                    <p>🏢 Tenant: ${clientName}</p>
-                    <p>📡 Endpoint: Gemini 2.5 Flash</p>
-                </div>
-            `;
+            outputBox.innerHTML = "⚡ Initializing Sentis Core v3.2...";
 
             const mod = modules[activeTab];
             const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-
-            const fullPrompt = `You are powering ${mod.title} for the client company named "${clientName}".
-Company Custom Knowledge Base / Rules: "${knowledge}"
-
-SYSTEM INSTRUCTION:
-${mod.systemPrompt}
-
-USER DATA INPUT:
-"${inputVal}"`;
+            const prompt = `Client: "${clientName}". Rules: "${knowledge}". Prompt: ${mod.systemPrompt}\n\nInput: "${inputVal}"`;
 
             try {
-                const response = await fetch(endpoint, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: fullPrompt }] }]
-                    })
+                const res = await fetch(endpoint, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    outputBox.innerHTML = `<div class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-mono">❌ API ERROR [${data.error.code}]: ${data.error.message}</div>`;
-                } else {
-                    const resultText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (resultText) {
-                        outputBox.innerHTML = `<div class="prose prose-invert max-w-none text-sm leading-relaxed">${marked.parse(resultText)}</div>`;
-                    } else {
-                        outputBox.innerHTML = `<div class="p-4 bg-amber-500/10 text-amber-300 text-xs">⚠️ Empty payload returned.</div>`;
-                    }
-                }
-
+                const data = await res.json();
+                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
+                outputBox.innerHTML = marked.parse(text);
             } catch (err) {
-                outputBox.innerHTML = `<div class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-mono">❌ EXECUTION ERROR: ${err.message}</div>`;
+                outputBox.innerHTML = "❌ Error: " + err.message;
             } finally {
                 loader.classList.add('hidden');
-                execBtn.disabled = false;
-                execBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
-        }
-
-        function handleCustomerKey(e) {
-            if (e.key === 'Enter') sendCustomerMessage();
         }
 
         async function sendCustomerMessage() {
@@ -558,77 +248,26 @@ USER DATA INPUT:
             const inputField = document.getElementById('customerInput');
             const chatBox = document.getElementById('customerChatBox');
             const query = inputField.value.trim();
+            if (!apiKey || !query) return;
 
-            if (!apiKey) {
-                alert("API Key missing! Please configure it in settings.");
-                toggleSettingsModal();
-                return;
-            }
-            if (!query) return;
-
-            // Append Customer Message
-            chatBox.innerHTML += `
-                <div class="flex items-start justify-end space-x-3">
-                    <div class="bg-indigo-600 text-white rounded-2xl p-4 text-xs max-w-lg leading-relaxed shadow-md">
-                        ${query}
-                    </div>
-                    <div class="w-7 h-7 bg-gray-700 rounded-lg flex items-center justify-center text-gray-300 text-xs shrink-0 font-bold">You</div>
-                </div>
-            `;
+            chatBox.innerHTML += `<div class="flex justify-end"><div class="bg-indigo-600 text-white rounded-2xl p-3 text-xs max-w-md">${query}</div></div>`;
             inputField.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Loading AI bubble
-            const loadingId = 'ai-loading-' + Date.now();
-            chatBox.innerHTML += `
-                <div id="${loadingId}" class="flex items-start space-x-3">
-                    <div class="w-7 h-7 bg-indigo-600/30 border border-indigo-500/40 rounded-lg flex items-center justify-center text-indigo-300 text-xs shrink-0 font-bold">AI</div>
-                    <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-gray-400 animate-pulse">
-                        Thinking...
-                    </div>
-                </div>
-            `;
-            chatBox.scrollTop = chatBox.scrollHeight;
-
             const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `You are a 24/7 customer support AI assistant for the company "${clientName}".
-Company Knowledge Base / Guidelines: "${knowledge}"
-
-Answer this customer question politely, accurately, and concisely based on the company knowledge above:
-"${query}"`;
+            const prompt = `Support AI for "${clientName}". Guidelines: "${knowledge}". Answer customer query: "${query}"`;
 
             try {
-                const response = await fetch(endpoint, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                const res = await fetch(endpoint, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
-
-                const data = await response.json();
-                document.getElementById(loadingId).remove();
-
-                const answer = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't process that request right now.";
-
-                chatBox.innerHTML += `
-                    <div class="flex items-start space-x-3">
-                        <div class="w-7 h-7 bg-indigo-600/30 border border-indigo-500/40 rounded-lg flex items-center justify-center text-indigo-300 text-xs shrink-0 font-bold">AI</div>
-                        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-gray-200 max-w-lg leading-relaxed">
-                            ${marked.parse(answer)}
-                        </div>
-                    </div>
-                `;
+                const data = await res.json();
+                const ans = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Error.";
+                chatBox.innerHTML += `<div class="flex"><div class="bg-white/5 border border-white/10 rounded-2xl p-3 text-xs text-gray-200 max-w-md">${marked.parse(ans)}</div></div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
-
-            } catch (err) {
-                document.getElementById(loadingId).remove();
-                chatBox.innerHTML += `
-                    <div class="flex items-start space-x-3">
-                        <div class="w-7 h-7 bg-red-600/30 border border-red-500/40 rounded-lg flex items-center justify-center text-red-300 text-xs shrink-0 font-bold">!</div>
-                        <div class="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-xs text-red-300 max-w-lg">
-                            Connection error. Please try again.
-                        </div>
-                    </div>
-                `;
+            } catch (e) {
+                chatBox.innerHTML += `<div class="text-red-400 text-xs">Error responding.</div>`;
             }
         }
     </script>
