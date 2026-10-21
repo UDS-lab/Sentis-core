@@ -3,271 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SENTIS OS | Enterprise AI Operating System</title>
+    <title>SENTIS OS | Autonomous Enterprise Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#05070a', cardbg: 'rgba(15, 20, 32, 0.75)', bordercolor: 'rgba(255, 255, 255, 0.08)', accent: '#6366f1' } } } }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#08080a',
+                        cardbg: 'rgba(18, 18, 24, 0.85)',
+                        neonred: '#ff2a5f',
+                        crimson: '#dc2626',
+                    }
+                }
+            }
+        }
     </script>
     <style>
-        ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: #05070a; } ::-webkit-scrollbar-thumb { background: #1e2640; border-radius: 10px; }
-        .glass-card { background: rgba(15, 22, 36, 0.65); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
-        .glow-indigo { box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.3); }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #08080a; }
+        ::-webkit-scrollbar-thumb { background: #2a0a10; border-radius: 10px; }
+        
+        .neon-border {
+            border: 1px solid rgba(255, 42, 95, 0.3);
+            box-shadow: 0 0 15px rgba(255, 42, 95, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neon-border:hover {
+            border-color: rgba(255, 42, 95, 0.8);
+            box-shadow: 0 0 25px rgba(255, 42, 95, 0.4);
+            transform: translateY(-4px);
+        }
+        .neon-glow-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+        }
+        .neon-glow-btn:hover {
+            box-shadow: 0 0 30px rgba(255, 42, 95, 0.7);
+        }
     </style>
 </head>
-<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col antialiased selection:bg-red-600 selection:text-white">
 
-    <header class="border-b border-bordercolor bg-darkbg/90 backdrop-blur-xl px-4 md:px-8 py-3.5 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center space-x-4">
-            <div class="flex items-center space-x-3">
-                <div class="w-3 h-3 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/80"></div>
-                <span class="text-xl font-extrabold tracking-wider text-white font-mono">SENTIS<span class="text-indigo-400 text-xs ml-1 font-mono font-normal bg-indigo-950/80 px-2 py-0.5 rounded-full border border-indigo-800/50">PRO v3.2</span></span>
-            </div>
-            <span class="hidden lg:inline-block text-gray-600">|</span>
-            <div class="hidden lg:flex items-center space-x-2 text-xs text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                <i class="fa-solid fa-building text-indigo-400"></i>
-                <span>Tenant:</span>
-                <span id="displayClientName" class="text-white font-semibold">Apex Systems</span>
-            </div>
+    <!-- Header Navigation -->
+    <header class="border-b border-red-900/30 bg-darkbg/95 backdrop-blur-xl px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 bg-red-600 rounded-full animate-ping"></div>
+            <span class="text-2xl font-black tracking-widest text-white font-mono">SENTIS<span class="text-red-500 text-xs ml-2 font-mono font-normal bg-red-950/80 px-2.5 py-1 rounded-full border border-red-800/50">PRO v4.0</span></span>
         </div>
-        <div>
-            <button onclick="toggleSettingsModal()" class="text-xs bg-white/5 hover:bg-white/10 text-gray-300 px-3 py-2 rounded-xl border border-white/10 transition flex items-center space-x-2">
-                <i class="fa-solid fa-sliders text-indigo-400"></i>
-                <span class="hidden sm:inline">Brand & Key Config</span>
-            </button>
+
+        <!-- Customizable Header Business Name -->
+        <div class="text-center">
+            <h1 id="headerClientName" class="text-lg md:text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-400 to-red-600 font-mono">
+                Apex Systems
+            </h1>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-mono">Enterprise AI Tenant Hub</p>
         </div>
+
+        <!-- Corner Business Info & Config Button -->
+        <button onclick="toggleSettingsModal()" class="text-xs bg-red-950/40 hover:bg-red-900/50 text-red-200 px-4 py-2.5 rounded-xl border border-red-800/50 transition flex items-center space-x-2 shadow-lg shadow-red-950/50">
+            <i class="fa-solid fa-building-user text-red-500"></i>
+            <span class="hidden sm:inline font-semibold">Business Info & Policy Config</span>
+        </button>
     </header>
 
-    <div class="flex flex-1 overflow-hidden">
-        <aside class="w-16 md:w-72 border-r border-bordercolor bg-darkbg/90 p-3 md:p-5 flex flex-col justify-between shrink-0">
-            <div class="space-y-6">
-                <div>
-                    <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold px-3 mb-3 hidden md:block">Modules Hub</p>
-                    <nav class="space-y-1.5">
-                        <button onclick="switchTab('support')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between bg-indigo-600 text-white shadow-lg shadow-indigo-600/30" data-tab="support">
-                            <div class="flex items-center space-x-3"><i class="fa-solid fa-headset text-base"></i><span class="hidden md:inline font-semibold">Support Brain</span></div>
-                            <span class="hidden md:inline text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-mono">24/7</span>
-                        </button>
-                        <button onclick="switchTab('inbox')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white" data-tab="inbox">
-                            <div class="flex items-center space-x-3"><i class="fa-solid fa-inbox text-base"></i><span class="hidden md:inline font-semibold">Inbox Command</span></div>
-                        </button>
-                        <button onclick="switchTab('qualify')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white" data-tab="qualify">
-                            <div class="flex items-center space-x-3"><i class="fa-solid fa-filter text-base"></i><span class="hidden md:inline font-semibold">Lead Qualify</span></div>
-                        </button>
-                        <button onclick="switchTab('proposal')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white" data-tab="proposal">
-                            <div class="flex items-center space-x-3"><i class="fa-solid fa-file-contract text-base"></i><span class="hidden md:inline font-semibold">Deal Proposal</span></div>
-                        </button>
-                        <button onclick="switchTab('sync')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white" data-tab="sync">
-                            <div class="flex items-center space-x-3"><i class="fa-solid fa-brain text-base"></i><span class="hidden md:inline font-semibold">SOP Knowledge</span></div>
-                        </button>
-                        <button onclick="switchTab('call')" class="tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white" data-tab="call">
-                            <div class="flex items-center space-x-3"><i class="fa-solid fa-microphone-lines text-base"></i><span class="hidden md:inline font-semibold">Call Intel</span></div>
-                        </button>
-                    </nav>
-                </div>
-            </div>
-        </aside>
+    <!-- Main Dynamic Application Container -->
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto flex flex-col max-w-7xl w-full mx-auto">
+        <div id="appWorkspace" class="flex-1 flex flex-col justify-center">
+            <!-- Rendered dynamically (Grid View vs Module Workspace) -->
+        </div>
+    </main>
 
-        <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-darkbg flex flex-col">
-            <div id="module-container" class="max-w-5xl w-full mx-auto flex flex-col flex-1 space-y-6"></div>
-        </main>
-    </div>
-
-    <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass-card max-w-md w-full p-6 rounded-3xl border border-white/10 space-y-5">
-            <div class="flex justify-between items-center border-b border-white/10 pb-4">
-                <h3 class="text-lg font-bold text-white flex items-center space-x-2"><i class="fa-solid fa-gears text-indigo-400"></i><span>Enterprise Configuration</span></h3>
+    <!-- Corner Settings / Business Config Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-darkbg max-w-lg w-full p-6 rounded-3xl border border-red-800/50 space-y-5 shadow-2xl shadow-red-950/80">
+            <div class="flex justify-between items-center border-b border-red-900/30 pb-4">
+                <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-sliders text-red-500"></i>
+                    <span>Business Profile & Engine Config</span>
+                </h3>
                 <button onclick="toggleSettingsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
+
             <div class="space-y-4">
                 <div>
-                    <label class="text-xs font-semibold text-gray-400 block mb-1.5">Client / Business Name</label>
-                    <input type="text" id="clientNameInput" placeholder="e.g. Apex Logistics" class="w-full bg-darkbg border border-white/10 text-sm p-3 rounded-xl focus:outline-none focus:border-indigo-500 text-white">
+                    <label class="text-xs font-semibold text-gray-300 block mb-1.5">Business / Company Name</label>
+                    <input type="text" id="clientNameInput" placeholder="e.g. Cyberdyne Logistics" class="w-full bg-black border border-red-900/40 text-sm p-3 rounded-xl focus:outline-none focus:border-red-500 text-white">
                 </div>
+
                 <div>
-                    <label class="text-xs font-semibold text-gray-400 block mb-1.5">Gemini API Key</label>
-                    <input type="password" id="apiKeyInput" placeholder="AI Studio API Key" class="w-full bg-darkbg border border-white/10 text-sm p-3 rounded-xl focus:outline-none focus:border-indigo-500 text-white">
+                    <label class="text-xs font-semibold text-gray-300 block mb-1.5">Gemini API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="Paste Gemini API Key" class="w-full bg-black border border-red-900/40 text-sm p-3 rounded-xl focus:outline-none focus:border-red-500 text-white">
                 </div>
+
                 <div>
-                    <label class="text-xs font-semibold text-gray-400 block mb-1.5">Custom Knowledge Base / Rules</label>
-                    <textarea id="knowledgeInput" rows="3" placeholder="Paste return policies, pricing, or SOP details..." class="w-full bg-darkbg border border-white/10 text-xs p-3 rounded-xl focus:outline-none focus:border-indigo-500 text-gray-300 resize-none"></textarea>
+                    <label class="text-xs font-semibold text-gray-300 block mb-1.5">Business Information, Rules & Policies</label>
+                    <textarea id="knowledgeInput" rows="4" placeholder="Enter company details, refund policies, pricing tiers, or standard operating procedures here..." class="w-full bg-black border border-red-900/40 text-xs p-3 rounded-xl focus:outline-none focus:border-red-500 text-gray-300 resize-none leading-relaxed"></textarea>
                 </div>
             </div>
+
             <div class="pt-2 flex justify-end space-x-3">
-                <button onclick="toggleSettingsModal()" class="px-4 py-2.5 text-xs font-medium text-gray-400">Cancel</button>
-                <button onclick="saveSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-600/30">Save Configuration</button>
+                <button onclick="toggleSettingsModal()" class="px-4 py-2.5 text-xs font-medium text-gray-400 hover:text-white">Cancel</button>
+                <button onclick="saveSettings()" class="neon-glow-btn text-white text-xs font-bold px-6 py-2.5 rounded-xl transition">Save Profile</button>
             </div>
         </div>
     </div>
 
     <script>
         const modules = {
-            support: { title: "Support Brain", tagline: "Autonomous Customer Experience Engine", icon: "fa-headset", placeholder: "Type customer inquiry...", systemPrompt: "You are the primary Customer Support AI for this business. Answer precisely and empathetically." },
-            inbox: { title: "Inbox Command", tagline: "Email Summarizer & Response Generator", icon: "fa-inbox", placeholder: "Paste incoming customer email...", systemPrompt: "You are an executive email assistant. Output: 1) Summary, 2) Sentiment, 3) Response Draft." },
-            qualify: { title: "Lead Qualify Engine", tagline: "Inbound Prospect Intent Scoring", icon: "fa-filter", placeholder: "Paste lead or form details...", systemPrompt: "You are an enterprise sales qualifier. Output: 1) Intent Score (1-10), 2) Budget Tier, 3) Closing Strategy." },
-            proposal: { title: "Deal Proposal Generator", tagline: "Automated Commercial Contract Builder", icon: "fa-file-contract", placeholder: "Paste raw meeting notes...", systemPrompt: "You are an enterprise deal consultant. Generate a commercial proposal outline with Scope, Deliverables, and Pricing." },
-            sync: { title: "SOP Knowledge Co-Pilot", tagline: "Internal Policy Guidance System", icon: "fa-brain", placeholder: "Ask any internal operational question...", systemPrompt: "You are the internal operations co-pilot. Provide exact step-by-step guidance." },
-            call: { title: "Call Intelligence Hub", tagline: "Transcript Analyzer & Action Extractor", icon: "fa-microphone-lines", placeholder: "Paste call transcript...", systemPrompt: "You are an executive chief of staff. Extract: 1) Key Decisions, 2) Risks, 3) Action Items." }
+            support: { title: "Support Brain", tagline: "Autonomous Customer Experience Engine", icon: "fa-headset", desc: "24/7 client support automated using custom policies." },
+            inbox: { title: "Inbox Command", tagline: "Email Summarizer & Response Generator", icon: "fa-inbox", desc: "Executive email threads parsed & draft generation." },
+            qualify: { title: "Lead Qualify Engine", tagline: "Inbound Prospect Intent Scoring", icon: "fa-filter", desc: "Scores leads, budget tiers, and closing tactics." },
+            proposal: { title: "Deal Proposal Generator", tagline: "Automated Scope & Contract Builder", icon: "fa-file-contract", desc: "Turns notes into polished client proposals instantly." },
+            sync: { title: "SOP Knowledge Co-Pilot", tagline: "Internal Policy Guidance System", icon: "fa-brain", desc: "Answers operational & policy questions for teams." },
+            call: { title: "Call Intelligence Hub", tagline: "Transcript & Media Action Extractor", icon: "fa-microphone-lines", desc: "Extracts decisions, risks & action items from meetings." }
         };
 
-        let activeTab = 'support';
-        let supportViewMode = 'admin';
+        let currentView = 'grid'; // 'grid' or active module key
+        let attachedFile = null; // Base64 data for image/audio upload
 
-        window.addEventListener('DOMContentLoaded', () => { loadSavedConfig(); renderModule(); });
+        window.addEventListener('DOMContentLoaded', () => {
+            loadConfig();
+            renderApp();
+        });
 
-        function loadSavedConfig() {
-            document.getElementById('apiKeyInput').value = localStorage.getItem('sentis_gemini_key') || "";
-            document.getElementById('clientNameInput').value = localStorage.getItem('sentis_client_name') || "Apex Systems";
-            document.getElementById('knowledgeInput').value = localStorage.getItem('sentis_knowledge') || "";
-            document.getElementById('displayClientName').innerText = localStorage.getItem('sentis_client_name') || "Apex Systems";
+        function loadConfig() {
+            const client = localStorage.getItem('sentis_client') || "Apex Systems";
+            const key = localStorage.getItem('sentis_key') || "";
+            const knowledge = localStorage.getItem('sentis_knowledge') || "";
+
+            document.getElementById('headerClientName').innerText = client;
+            document.getElementById('clientNameInput').value = client;
+            document.getElementById('apiKeyInput').value = key;
+            document.getElementById('knowledgeInput').value = knowledge;
         }
 
-        function toggleSettingsModal() { document.getElementById('settingsModal').classList.toggle('hidden'); }
+        function toggleSettingsModal() {
+            document.getElementById('settingsModal').classList.toggle('hidden');
+        }
 
         function saveSettings() {
-            localStorage.setItem('sentis_gemini_key', document.getElementById('apiKeyInput').value.trim());
-            localStorage.setItem('sentis_client_name', document.getElementById('clientNameInput').value.trim() || "Apex Systems");
-            localStorage.setItem('sentis_knowledge', document.getElementById('knowledgeInput').value.trim());
-            document.getElementById('displayClientName').innerText = localStorage.getItem('sentis_client_name');
+            const client = document.getElementById('clientNameInput').value.trim() || "Apex Systems";
+            const key = document.getElementById('apiKeyInput').value.trim();
+            const knowledge = document.getElementById('knowledgeInput').value.trim();
+
+            localStorage.setItem('sentis_client', client);
+            localStorage.setItem('sentis_key', key);
+            localStorage.setItem('sentis_knowledge', knowledge);
+
+            document.getElementById('headerClientName').innerText = client;
             toggleSettingsModal();
-            renderModule();
-            alert("🚀 Tenant configuration saved successfully!");
+            alert("🚀 Business profile & policy rules updated successfully!");
         }
 
-        function switchTab(tabKey) {
-            activeTab = tabKey; supportViewMode = 'admin';
-            document.querySelectorAll('.tab-btn').forEach(b => {
-                b.className = b.dataset.tab === tabKey ? "tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between bg-indigo-600 text-white shadow-lg shadow-indigo-600/30" : "tab-btn w-full text-left p-3 md:px-4 md:py-3.5 rounded-xl text-sm font-medium transition flex items-center justify-between text-gray-400 hover:bg-white/5 hover:text-white";
-            });
-            renderModule();
+        function openModule(key) {
+            currentView = key;
+            attachedFile = null;
+            renderApp();
         }
 
-        function setSupportMode(m) { supportViewMode = m; renderModule(); }
-        function copyWidgetLink() { navigator.clipboard.writeText(window.location.href); alert("📋 Live widget link copied!"); }
+        function returnToGrid() {
+            currentView = 'grid';
+            attachedFile = null;
+            renderApp();
+        }
 
-        function renderModule() {
-            const mod = modules[activeTab];
-            const clientName = localStorage.getItem('sentis_client_name') || "Apex Systems";
-            const container = document.getElementById('module-container');
-            
-            if (activeTab === 'support' && supportViewMode === 'customer') {
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                attachedFile = {
+                    mimeType: file.type,
+                    data: e.target.result.split(',')[1],
+                    name: file.name
+                };
+                document.getElementById('fileStatus').innerHTML = `
+                    <span class="text-xs text-red-400 font-mono flex items-center space-x-1">
+                        <i class="fa-solid fa-paperclip"></i>
+                        <span>Attached: ${file.name}</span>
+                    </span>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderApp() {
+            const container = document.getElementById('appWorkspace');
+            const clientName = localStorage.getItem('sentis_client') || "Apex Systems";
+
+            if (currentView === 'grid') {
                 container.innerHTML = `
-                    <div class="glass-card p-4 rounded-3xl border border-white/10 flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
-                            <span class="text-sm font-bold text-white">Live Customer Support Widget (${clientName})</span>
-                        </div>
-                        <button onclick="setSupportMode('admin')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-4 py-2 rounded-xl">Back to Admin</button>
+                    <div class="mb-8 text-center space-y-2">
+                        <h2 class="text-2xl md:text-3xl font-black uppercase tracking-wider text-white">Select AI Engine</h2>
+                        <p class="text-xs text-gray-400 font-mono">Select an enterprise module to run intelligence execution for ${clientName}</p>
                     </div>
-                    <div class="glass-card rounded-3xl border border-white/10 flex flex-col flex-1 overflow-hidden shadow-2xl">
-                        <div class="bg-darkbg/80 border-b border-white/10 px-6 py-4 flex items-center justify-between">
-                            <span class="text-sm font-bold text-white">${clientName} Support</span>
-                            <span class="text-[10px] bg-white/5 text-gray-400 px-2 py-1 rounded">Powered by Sentis</span>
-                        </div>
-                        <div id="customerChatBox" class="flex-1 p-6 overflow-y-auto space-y-4 min-h-[300px]">
-                            <div class="flex items-start space-x-3">
-                                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-gray-200">Hello! Welcome to <strong>${clientName}</strong>. How can I assist you today?</div>
+
+                    <!-- 3x2 Grid View Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
+                        ${Object.keys(modules).map(key => {
+                            const mod = modules[key];
+                            return `
+                                <div onclick="openModule('${key}')" class="neon-border bg-cardbg p-6 rounded-3xl cursor-pointer flex flex-col justify-between space-y-6 group">
+                                    <div class="flex items-center justify-between">
+                                        <div class="w-12 h-12 bg-red-950/60 border border-red-800/50 rounded-2xl flex items-center justify-center text-red-500 text-xl group-hover:scale-110 transition">
+                                            <i class="fa-solid ${mod.icon}"></i>
+                                        </div>
+                                        <span class="text-[10px] font-mono text-red-400 bg-red-950/80 px-2.5 py-1 rounded-full border border-red-900/40">ONLINE</span>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <h3 class="text-xl font-bold text-white group-hover:text-red-400 transition">${mod.title}</h3>
+                                        <p class="text-xs text-gray-400 leading-relaxed">${mod.desc}</p>
+                                    </div>
+
+                                    <div class="flex items-center text-xs font-semibold text-red-400 group-hover:translate-x-2 transition">
+                                        <span>Launch Engine</span>
+                                        <i class="fa-solid fa-arrow-right ml-2"></i>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            } else {
+                const mod = modules[currentView];
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-5xl mx-auto w-full">
+                        <!-- Navigation Header -->
+                        <div class="flex items-center justify-between border-b border-red-900/30 pb-4">
+                            <button onclick="returnToGrid()" class="bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs px-4 py-2.5 rounded-xl border border-red-800/50 flex items-center space-x-2 font-semibold">
+                                <i class="fa-solid fa-chevron-left"></i>
+                                <span>Back to Grid Hub</span>
+                            </button>
+
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid ${mod.icon} text-red-500 text-xl"></i>
+                                <div>
+                                    <h2 class="text-lg font-bold text-white">${mod.title}</h2>
+                                    <p class="text-[10px] text-gray-400">${mod.tagline}</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="p-4 bg-darkbg/90 border-t border-white/10 flex space-x-3">
-                            <input type="text" id="customerInput" onkeypress="if(event.key==='Enter')sendCustomerMessage()" placeholder="Ask a question..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none">
-                            <button onclick="sendCustomerMessage()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 rounded-xl text-xs font-semibold">Send</button>
+
+                        <!-- Workspace Input -->
+                        <div class="neon-border bg-cardbg p-6 rounded-3xl space-y-4">
+                            <textarea id="userInput" rows="5" placeholder="Enter prompt or details for ${mod.title}..." class="w-full bg-black/90 border border-red-900/40 rounded-2xl p-4 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-red-500 resize-none leading-relaxed"></textarea>
+
+                            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                                <!-- Multimodal Upload (Image/Audio) -->
+                                <div class="flex items-center space-x-3 w-full sm:w-auto">
+                                    <label class="cursor-pointer bg-red-950/40 hover:bg-red-900/50 border border-red-800/50 text-red-300 text-xs px-4 py-2.5 rounded-xl flex items-center space-x-2 transition">
+                                        <i class="fa-solid fa-paperclip text-red-500"></i>
+                                        <span>Attach Image / Audio / Doc</span>
+                                        <input type="file" onchange="handleFileUpload(event)" class="hidden" accept="image/*,audio/*,.pdf,.txt">
+                                    </label>
+                                    <div id="fileStatus"></div>
+                                </div>
+
+                                <button onclick="executeAI()" id="execBtn" class="neon-glow-btn text-white font-bold px-8 py-3 rounded-xl text-sm flex items-center space-x-2 w-full sm:w-auto justify-center">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span>Synthesize Payload</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Output View Stream -->
+                        <div class="neon-border bg-cardbg p-6 rounded-3xl space-y-3 min-h-[250px]">
+                            <div class="flex items-center justify-between border-b border-red-900/30 pb-3">
+                                <span class="text-xs font-bold text-red-400 font-mono uppercase tracking-wider">Cognitive Output Stream</span>
+                                <span id="loader" class="text-xs text-red-400 font-mono hidden animate-pulse">Processing Payload...</span>
+                            </div>
+                            <div id="outputResult" class="text-sm text-gray-300 leading-relaxed font-sans min-h-[150px]">
+                                Awaiting data input...
+                            </div>
                         </div>
                     </div>
                 `;
-                return;
             }
-
-            container.innerHTML = `
-                <div class="glass-card p-6 rounded-3xl border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-indigo-600/20 border border-indigo-500/30 rounded-2xl flex items-center justify-center text-indigo-400 text-xl"><i class="fa-solid ${mod.icon}"></i></div>
-                        <div>
-                            <h1 class="text-2xl font-bold text-white">${activeTab === 'support' ? clientName + ' — Support Brain' : mod.title}</h1>
-                            <p class="text-xs text-gray-400 mt-1">${mod.tagline}</p>
-                        </div>
-                    </div>
-                    ${activeTab === 'support' ? `
-                    <div class="flex space-x-2">
-                        <button onclick="copyWidgetLink()" class="bg-white/5 text-gray-300 border border-white/10 text-xs px-3.5 py-2.5 rounded-xl"><i class="fa-solid fa-copy mr-1"></i> Copy Link</button>
-                        <button onclick="setSupportMode('customer')" class="bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 text-xs px-4 py-2.5 rounded-xl font-semibold"><i class="fa-solid fa-users-viewfinder mr-1"></i> Preview Widget</button>
-                    </div>` : ''}
-                </div>
-                <div class="glass-card p-6 rounded-3xl border border-white/10 space-y-4">
-                    <textarea id="userInput" rows="5" class="w-full bg-darkbg/90 border border-white/10 rounded-2xl p-4 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-500 resize-none" placeholder="${mod.placeholder}"></textarea>
-                    <button onclick="runSentisCore()" id="execBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-4 rounded-2xl shadow-xl text-sm glow-indigo flex items-center justify-center space-x-2"><i class="fa-solid fa-bolt"></i><span>Synthesize ${mod.title}</span></button>
-                </div>
-                <div class="glass-card p-6 rounded-3xl border border-white/10 flex-1 flex flex-col space-y-3">
-                    <div class="flex justify-between border-b border-white/5 pb-3">
-                        <span class="text-xs font-semibold text-gray-300">Cognitive Output Stream</span>
-                        <span id="loader" class="text-xs text-indigo-400 font-mono hidden animate-pulse">Processing...</span>
-                    </div>
-                    <div id="outputResult" class="w-full flex-1 min-h-[200px] text-sm text-gray-300 font-sans">Awaiting execution payload...</div>
-                </div>
-            `;
         }
 
-        async function runSentisCore() {
-            const apiKey = localStorage.getItem('sentis_gemini_key');
-            const clientName = localStorage.getItem('sentis_client_name') || "Apex Systems";
+        async function executeAI() {
+            const key = localStorage.getItem('sentis_key');
+            const client = localStorage.getItem('sentis_client') || "Apex Systems";
             const knowledge = localStorage.getItem('sentis_knowledge') || "";
-            const inputVal = document.getElementById('userInput').value.trim();
+            const textVal = document.getElementById('userInput').value.trim();
             const outputBox = document.getElementById('outputResult');
             const loader = document.getElementById('loader');
 
-            if (!apiKey) { toggleSettingsModal(); alert("Please save your Gemini API Key in settings!"); return; }
-            if (!inputVal) { outputBox.innerHTML = "⚠️ Please provide input data."; return; }
+            if (!key) {
+                toggleSettingsModal();
+        async function executeAI() {
+            const key = localStorage.getItem('sentis_key');
+            const client = localStorage.getItem('sentis_client') || "Apex Systems";
+            const knowledge = localStorage.getItem('sentis_knowledge') || "";
+            const textVal = document.getElementById('userInput').value.trim();
+            const outputBox = document.getElementById('outputResult');
+            const loader = document.getElementById('loader');
+
+            if (!key) {
+                toggleSettingsModal();
+                alert("Please configure your Gemini API Key first!");
+                return;
+            }
+            if (!textVal && !attachedFile) {
+                outputBox.innerHTML = `<span class="text-amber-400">⚠️ Please provide text or attach a media file before running.</span>`;
+                return;
+            }
 
             loader.classList.remove('hidden');
-            outputBox.innerHTML = "⚡ Initializing Sentis Core v3.2...";
+            outputBox.innerHTML = `⚡ Initializing ${modules[currentView].title} execution stream...`;
 
-            const mod = modules[activeTab];
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `Client: "${clientName}". Rules: "${knowledge}". Prompt: ${mod.systemPrompt}\n\nInput: "${inputVal}"`;
+            const mod = modules[currentView];
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+
+            const parts = [
+                { text: `Tenant: "${client}". Custom Business Rules & Policies: "${knowledge}". System Role: ${mod.desc}. Prompt input: ${textVal}` }
+            ];
+
+            if (attachedFile) {
+                parts.push({
+                    inline_data: {
+                        mime_type: attachedFile.mimeType,
+                        data: attachedFile.data
+                    }
+                });
+            }
 
             try {
                 const res = await fetch(endpoint, {
-                    method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: parts }] })
                 });
+
                 const data = await res.json();
-                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
-                outputBox.innerHTML = marked.parse(text);
+                const resultText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+                outputBox.innerHTML = marked.parse(resultText);
+
             } catch (err) {
-                outputBox.innerHTML = "❌ Error: " + err.message;
+                outputBox.innerHTML = `<span class="text-red-500">❌ Error: ${err.message}</span>`;
             } finally {
                 loader.classList.add('hidden');
-            }
-        }
-
-        async function sendCustomerMessage() {
-            const apiKey = localStorage.getItem('sentis_gemini_key');
-            const clientName = localStorage.getItem('sentis_client_name') || "Apex Systems";
-            const knowledge = localStorage.getItem('sentis_knowledge') || "";
-            const inputField = document.getElementById('customerInput');
-            const chatBox = document.getElementById('customerChatBox');
-            const query = inputField.value.trim();
-            if (!apiKey || !query) return;
-
-            chatBox.innerHTML += `<div class="flex justify-end"><div class="bg-indigo-600 text-white rounded-2xl p-3 text-xs max-w-md">${query}</div></div>`;
-            inputField.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `Support AI for "${clientName}". Guidelines: "${knowledge}". Answer customer query: "${query}"`;
-
-            try {
-                const res = await fetch(endpoint, {
-                    method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                const data = await res.json();
-                const ans = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Error.";
-                chatBox.innerHTML += `<div class="flex"><div class="bg-white/5 border border-white/10 rounded-2xl p-3 text-xs text-gray-200 max-w-md">${marked.parse(ans)}</div></div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            } catch (e) {
-                chatBox.innerHTML += `<div class="text-red-400 text-xs">Error responding.</div>`;
             }
         }
     </script>
