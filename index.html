@@ -3,229 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SENTIS OS | Autonomous Enterprise Platform</title>
+    <title>SENTIS OS | Enterprise AI Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkbg: '#08080a',
-                        cardbg: 'rgba(18, 18, 24, 0.85)',
-                        neonred: '#ff2a5f',
-                        crimson: '#dc2626',
-                    }
-                }
-            }
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#08080a', cardbg: 'rgba(18, 18, 24, 0.9)', neonred: '#ff2a5f' } } } }
     </script>
     <style>
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #08080a; }
-        ::-webkit-scrollbar-thumb { background: #2a0a10; border-radius: 10px; }
-        
-        .neon-border {
-            border: 1px solid rgba(255, 42, 95, 0.3);
-            box-shadow: 0 0 15px rgba(255, 42, 95, 0.15);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .neon-border:hover {
-            border-color: rgba(255, 42, 95, 0.8);
-            box-shadow: 0 0 25px rgba(255, 42, 95, 0.4);
-            transform: translateY(-4px);
-        }
-        .neon-glow-btn {
-            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
-        }
-        .neon-glow-btn:hover {
-            box-shadow: 0 0 30px rgba(255, 42, 95, 0.7);
-        }
+        ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: #08080a; } ::-webkit-scrollbar-thumb { background: #3a0a10; border-radius: 10px; }
+        .neon-border { border: 1px solid rgba(255, 42, 95, 0.35); box-shadow: 0 0 15px rgba(255, 42, 95, 0.15); transition: all 0.25s ease; }
+        .neon-border:hover { border-color: rgba(255, 42, 95, 0.85); box-shadow: 0 0 25px rgba(255, 42, 95, 0.4); transform: translateY(-3px); }
+        .neon-glow-btn { background: linear-gradient(135deg, #dc2626, #991b1b); box-shadow: 0 0 20px rgba(220, 38, 38, 0.4); }
     </style>
 </head>
 <body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col antialiased selection:bg-red-600 selection:text-white">
 
-    <!-- Header Navigation -->
-    <header class="border-b border-red-900/30 bg-darkbg/95 backdrop-blur-xl px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+    <header class="border-b border-red-900/30 bg-darkbg/95 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
         <div class="flex items-center space-x-3">
             <div class="w-3 h-3 bg-red-600 rounded-full animate-ping"></div>
-            <span class="text-2xl font-black tracking-widest text-white font-mono">SENTIS<span class="text-red-500 text-xs ml-2 font-mono font-normal bg-red-950/80 px-2.5 py-1 rounded-full border border-red-800/50">PRO v4.0</span></span>
+            <span class="text-xl font-black tracking-widest text-white font-mono">SENTIS<span class="text-red-500 text-xs ml-2 bg-red-950/80 px-2 py-0.5 rounded border border-red-800/50">PRO v4.1</span></span>
         </div>
-
-        <!-- Customizable Header Business Name -->
         <div class="text-center">
-            <h1 id="headerClientName" class="text-lg md:text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-400 to-red-600 font-mono">
-                Apex Systems
-            </h1>
+            <h1 id="headerClientName" class="text-lg font-bold tracking-wider text-red-500 font-mono">Apex Systems</h1>
             <p class="text-[10px] text-gray-500 uppercase tracking-widest font-mono">Enterprise AI Tenant Hub</p>
         </div>
-
-        <!-- Corner Business Info & Config Button -->
-        <button onclick="toggleSettingsModal()" class="text-xs bg-red-950/40 hover:bg-red-900/50 text-red-200 px-4 py-2.5 rounded-xl border border-red-800/50 transition flex items-center space-x-2 shadow-lg shadow-red-950/50">
+        <button onclick="toggleSettingsModal()" class="text-xs bg-red-950/40 hover:bg-red-900/50 text-red-200 px-3.5 py-2 rounded-xl border border-red-800/50 flex items-center space-x-2">
             <i class="fa-solid fa-building-user text-red-500"></i>
-            <span class="hidden sm:inline font-semibold">Business Info & Policy Config</span>
+            <span class="hidden sm:inline font-semibold">Business Info & Policy</span>
         </button>
     </header>
 
-    <!-- Main Dynamic Application Container -->
-    <main class="flex-1 p-4 md:p-8 overflow-y-auto flex flex-col max-w-7xl w-full mx-auto">
-        <div id="appWorkspace" class="flex-1 flex flex-col justify-center">
-            <!-- Rendered dynamically (Grid View vs Module Workspace) -->
-        </div>
+    <main class="flex-1 p-4 md:p-8 flex flex-col max-w-7xl w-full mx-auto">
+        <div id="appWorkspace" class="flex-1 flex flex-col justify-center"></div>
     </main>
 
-    <!-- Corner Settings / Business Config Modal -->
     <div id="settingsModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-darkbg max-w-lg w-full p-6 rounded-3xl border border-red-800/50 space-y-5 shadow-2xl shadow-red-950/80">
-            <div class="flex justify-between items-center border-b border-red-900/30 pb-4">
-                <h3 class="text-lg font-bold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-sliders text-red-500"></i>
-                    <span>Business Profile & Engine Config</span>
-                </h3>
+        <div class="bg-darkbg max-w-lg w-full p-6 rounded-3xl border border-red-800/50 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-red-900/30 pb-3">
+                <h3 class="text-md font-bold text-white flex items-center space-x-2"><i class="fa-solid fa-sliders text-red-500"></i><span>Business Profile & Engine Config</span></h3>
                 <button onclick="toggleSettingsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <div>
-                    <label class="text-xs font-semibold text-gray-300 block mb-1.5">Business / Company Name</label>
-                    <input type="text" id="clientNameInput" placeholder="e.g. Cyberdyne Logistics" class="w-full bg-black border border-red-900/40 text-sm p-3 rounded-xl focus:outline-none focus:border-red-500 text-white">
+                    <label class="text-xs font-semibold text-gray-300 block mb-1">Company / Business Name</label>
+                    <input type="text" id="clientNameInput" placeholder="e.g. Apex Systems" class="w-full bg-black border border-red-900/40 text-sm p-3 rounded-xl text-white focus:outline-none focus:border-red-500">
                 </div>
-
                 <div>
-                    <label class="text-xs font-semibold text-gray-300 block mb-1.5">Gemini API Key</label>
-                    <input type="password" id="apiKeyInput" placeholder="Paste Gemini API Key" class="w-full bg-black border border-red-900/40 text-sm p-3 rounded-xl focus:outline-none focus:border-red-500 text-white">
+                    <label class="text-xs font-semibold text-gray-300 block mb-1">Gemini API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="Paste Gemini API Key" class="w-full bg-black border border-red-900/40 text-sm p-3 rounded-xl text-white focus:outline-none focus:border-red-500">
                 </div>
-
                 <div>
-                    <label class="text-xs font-semibold text-gray-300 block mb-1.5">Business Information, Rules & Policies</label>
-                    <textarea id="knowledgeInput" rows="4" placeholder="Enter company details, refund policies, pricing tiers, or standard operating procedures here..." class="w-full bg-black border border-red-900/40 text-xs p-3 rounded-xl focus:outline-none focus:border-red-500 text-gray-300 resize-none leading-relaxed"></textarea>
+                    <label class="text-xs font-semibold text-gray-300 block mb-1">Business Policies & SOP Guidelines</label>
+                    <textarea id="knowledgeInput" rows="3" placeholder="Enter return policies, service details, pricing rules..." class="w-full bg-black border border-red-900/40 text-xs p-3 rounded-xl text-gray-300 resize-none focus:outline-none focus:border-red-500"></textarea>
                 </div>
             </div>
-
             <div class="pt-2 flex justify-end space-x-3">
-                <button onclick="toggleSettingsModal()" class="px-4 py-2.5 text-xs font-medium text-gray-400 hover:text-white">Cancel</button>
-                <button onclick="saveSettings()" class="neon-glow-btn text-white text-xs font-bold px-6 py-2.5 rounded-xl transition">Save Profile</button>
+                <button onclick="toggleSettingsModal()" class="px-4 py-2 text-xs text-gray-400">Cancel</button>
+                <button onclick="saveSettings()" class="neon-glow-btn text-white text-xs font-bold px-5 py-2.5 rounded-xl">Save Profile</button>
             </div>
         </div>
     </div>
 
     <script>
         const modules = {
-            support: { title: "Support Brain", tagline: "Autonomous Customer Experience Engine", icon: "fa-headset", desc: "24/7 client support automated using custom policies." },
-            inbox: { title: "Inbox Command", tagline: "Email Summarizer & Response Generator", icon: "fa-inbox", desc: "Executive email threads parsed & draft generation." },
-            qualify: { title: "Lead Qualify Engine", tagline: "Inbound Prospect Intent Scoring", icon: "fa-filter", desc: "Scores leads, budget tiers, and closing tactics." },
-            proposal: { title: "Deal Proposal Generator", tagline: "Automated Scope & Contract Builder", icon: "fa-file-contract", desc: "Turns notes into polished client proposals instantly." },
-            sync: { title: "SOP Knowledge Co-Pilot", tagline: "Internal Policy Guidance System", icon: "fa-brain", desc: "Answers operational & policy questions for teams." },
-            call: { title: "Call Intelligence Hub", tagline: "Transcript & Media Action Extractor", icon: "fa-microphone-lines", desc: "Extracts decisions, risks & action items from meetings." }
+            support: { title: "Support Brain", tagline: "Autonomous Customer Support Engine", icon: "fa-headset", desc: "Automates 24/7 customer queries using custom company policies." },
+            inbox: { title: "Inbox Command", tagline: "Email Summarizer & Draft Generator", icon: "fa-inbox", desc: "Summarizes client threads & generates high-converting drafts." },
+            qualify: { title: "Lead Qualify Engine", tagline: "Inbound Prospect Scoring", icon: "fa-filter", desc: "Scores intent (1-10), budget tier, and closing strategy." },
+            proposal: { title: "Deal Proposal Generator", tagline: "Automated Commercial Contract Builder", icon: "fa-file-contract", desc: "Converts meeting notes into structured sales proposals." },
+            sync: { title: "SOP Knowledge Co-Pilot", tagline: "Internal Policy Guidance System", icon: "fa-brain", desc: "Instant step-by-step guidance on company standard operating procedures." },
+            call: { title: "Call Intelligence Hub", tagline: "Transcript & Media Action Extractor", icon: "fa-microphone-lines", desc: "Extracts key decisions, objections, and team action items." }
         };
 
-        let currentView = 'grid'; // 'grid' or active module key
-        let attachedFile = null; // Base64 data for image/audio upload
+        let currentView = 'grid', attachedFile = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadConfig();
-            renderApp();
-        });
+        window.addEventListener('DOMContentLoaded', () => { loadConfig(); renderApp(); });
 
         function loadConfig() {
             const client = localStorage.getItem('sentis_client') || "Apex Systems";
-            const key = localStorage.getItem('sentis_key') || "";
-            const knowledge = localStorage.getItem('sentis_knowledge') || "";
-
             document.getElementById('headerClientName').innerText = client;
             document.getElementById('clientNameInput').value = client;
-            document.getElementById('apiKeyInput').value = key;
-            document.getElementById('knowledgeInput').value = knowledge;
+            document.getElementById('apiKeyInput').value = localStorage.getItem('sentis_key') || "";
+            document.getElementById('knowledgeInput').value = localStorage.getItem('sentis_knowledge') || "";
         }
 
-        function toggleSettingsModal() {
-            document.getElementById('settingsModal').classList.toggle('hidden');
-        }
+        function toggleSettingsModal() { document.getElementById('settingsModal').classList.toggle('hidden'); }
 
         function saveSettings() {
             const client = document.getElementById('clientNameInput').value.trim() || "Apex Systems";
-            const key = document.getElementById('apiKeyInput').value.trim();
-            const knowledge = document.getElementById('knowledgeInput').value.trim();
-
             localStorage.setItem('sentis_client', client);
-            localStorage.setItem('sentis_key', key);
-            localStorage.setItem('sentis_knowledge', knowledge);
-
+            localStorage.setItem('sentis_key', document.getElementById('apiKeyInput').value.trim());
+            localStorage.setItem('sentis_knowledge', document.getElementById('knowledgeInput').value.trim());
             document.getElementById('headerClientName').innerText = client;
-            toggleSettingsModal();
-            alert("🚀 Business profile & policy rules updated successfully!");
+            toggleSettingsModal(); renderApp(); alert("🚀 Profile updated!");
         }
 
-        function openModule(key) {
-            currentView = key;
-            attachedFile = null;
-            renderApp();
-        }
-
-        function returnToGrid() {
-            currentView = 'grid';
-            attachedFile = null;
-            renderApp();
-        }
-
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
             if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                attachedFile = {
-                    mimeType: file.type,
-                    data: e.target.result.split(',')[1],
-                    name: file.name
-                };
-                document.getElementById('fileStatus').innerHTML = `
-                    <span class="text-xs text-red-400 font-mono flex items-center space-x-1">
-                        <i class="fa-solid fa-paperclip"></i>
-                        <span>Attached: ${file.name}</span>
-                    </span>
-                `;
+            const r = new FileReader();
+            r.onload = (evt) => {
+                attachedFile = { mimeType: file.type, data: evt.target.result.split(',')[1], name: file.name };
+                document.getElementById('fileStatus').innerHTML = `<span class="text-xs text-red-400 font-mono">📎 ${file.name}</span>`;
             };
-            reader.readAsDataURL(file);
+            r.readAsDataURL(file);
         }
 
         function renderApp() {
             const container = document.getElementById('appWorkspace');
-            const clientName = localStorage.getItem('sentis_client') || "Apex Systems";
+            const client = localStorage.getItem('sentis_client') || "Apex Systems";
 
             if (currentView === 'grid') {
                 container.innerHTML = `
-                    <div class="mb-8 text-center space-y-2">
-                        <h2 class="text-2xl md:text-3xl font-black uppercase tracking-wider text-white">Select AI Engine</h2>
-                        <p class="text-xs text-gray-400 font-mono">Select an enterprise module to run intelligence execution for ${clientName}</p>
+                    <div class="mb-6 text-center space-y-1">
+                        <h2 class="text-2xl font-black uppercase tracking-wider text-white">Select AI Engine</h2>
+                        <p class="text-xs text-gray-400 font-mono">Active Tenant: ${client}</p>
                     </div>
-
-                    <!-- 3x2 Grid View Layout -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto w-full">
                         ${Object.keys(modules).map(key => {
                             const mod = modules[key];
                             return `
-                                <div onclick="openModule('${key}')" class="neon-border bg-cardbg p-6 rounded-3xl cursor-pointer flex flex-col justify-between space-y-6 group">
-                                    <div class="flex items-center justify-between">
-                                        <div class="w-12 h-12 bg-red-950/60 border border-red-800/50 rounded-2xl flex items-center justify-center text-red-500 text-xl group-hover:scale-110 transition">
-                                            <i class="fa-solid ${mod.icon}"></i>
-                                        </div>
-                                        <span class="text-[10px] font-mono text-red-400 bg-red-950/80 px-2.5 py-1 rounded-full border border-red-900/40">ONLINE</span>
+                                <div onclick="currentView='${key}';renderApp();" class="neon-border bg-cardbg p-5 rounded-3xl cursor-pointer flex flex-col justify-between space-y-4 group">
+                                    <div class="flex justify-between items-center">
+                                        <div class="w-10 h-10 bg-red-950/60 border border-red-800/50 rounded-xl flex items-center justify-center text-red-500 text-lg group-hover:scale-110 transition"><i class="fa-solid ${mod.icon}"></i></div>
+                                        <span class="text-[10px] font-mono text-red-400 bg-red-950/80 px-2 py-0.5 rounded border border-red-900/40">ONLINE</span>
                                     </div>
-
-                                    <div class="space-y-2">
-                                        <h3 class="text-xl font-bold text-white group-hover:text-red-400 transition">${mod.title}</h3>
-                                        <p class="text-xs text-gray-400 leading-relaxed">${mod.desc}</p>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-white group-hover:text-red-400 transition">${mod.title}</h3>
+                                        <p class="text-xs text-gray-400 mt-1 leading-relaxed">${mod.desc}</p>
                                     </div>
-
-                                    <div class="flex items-center text-xs font-semibold text-red-400 group-hover:translate-x-2 transition">
-                                        <span>Launch Engine</span>
-                                        <i class="fa-solid fa-arrow-right ml-2"></i>
-                                    </div>
+                                    <div class="text-xs font-semibold text-red-400 group-hover:translate-x-1 transition flex items-center">Launch Engine <i class="fa-solid fa-arrow-right ml-2 text-[10px]"></i></div>
                                 </div>
                             `;
                         }).join('')}
@@ -234,54 +141,24 @@
             } else {
                 const mod = modules[currentView];
                 container.innerHTML = `
-                    <div class="space-y-6 max-w-5xl mx-auto w-full">
-                        <!-- Navigation Header -->
-                        <div class="flex items-center justify-between border-b border-red-900/30 pb-4">
-                            <button onclick="returnToGrid()" class="bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs px-4 py-2.5 rounded-xl border border-red-800/50 flex items-center space-x-2 font-semibold">
-                                <i class="fa-solid fa-chevron-left"></i>
-                                <span>Back to Grid Hub</span>
-                            </button>
-
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid ${mod.icon} text-red-500 text-xl"></i>
-                                <div>
-                                    <h2 class="text-lg font-bold text-white">${mod.title}</h2>
-                                    <p class="text-[10px] text-gray-400">${mod.tagline}</p>
-                                </div>
-                            </div>
+                    <div class="space-y-5 max-w-5xl mx-auto w-full">
+                        <div class="flex items-center justify-between border-b border-red-900/30 pb-3">
+                            <button onclick="currentView='grid';attachedFile=null;renderApp();" class="bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs px-3.5 py-2 rounded-xl border border-red-800/50 font-semibold"><i class="fa-solid fa-chevron-left mr-1"></i> Back to Grid Hub</button>
+                            <div class="flex items-center space-x-2"><i class="fa-solid ${mod.icon} text-red-500 text-lg"></i><span class="text-md font-bold text-white">${mod.title}</span></div>
                         </div>
-
-                        <!-- Workspace Input -->
-                        <div class="neon-border bg-cardbg p-6 rounded-3xl space-y-4">
-                            <textarea id="userInput" rows="5" placeholder="Enter prompt or details for ${mod.title}..." class="w-full bg-black/90 border border-red-900/40 rounded-2xl p-4 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-red-500 resize-none leading-relaxed"></textarea>
-
-                            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-                                <!-- Multimodal Upload (Image/Audio) -->
-                                <div class="flex items-center space-x-3 w-full sm:w-auto">
-                                    <label class="cursor-pointer bg-red-950/40 hover:bg-red-900/50 border border-red-800/50 text-red-300 text-xs px-4 py-2.5 rounded-xl flex items-center space-x-2 transition">
-                                        <i class="fa-solid fa-paperclip text-red-500"></i>
-                                        <span>Attach Image / Audio / Doc</span>
-                                        <input type="file" onchange="handleFileUpload(event)" class="hidden" accept="image/*,audio/*,.pdf,.txt">
-                                    </label>
+                        <div class="neon-border bg-cardbg p-5 rounded-3xl space-y-3">
+                            <textarea id="userInput" rows="4" placeholder="Enter instructions or data for ${mod.title}..." class="w-full bg-black border border-red-900/40 rounded-xl p-3 text-sm text-gray-200 focus:outline-none focus:border-red-500 resize-none"></textarea>
+                            <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                                <div class="flex items-center space-x-2">
+                                    <label class="cursor-pointer bg-red-950/40 border border-red-800/50 text-red-300 text-xs px-3.5 py-2 rounded-xl flex items-center space-x-1.5"><i class="fa-solid fa-paperclip text-red-500"></i><span>Attach Media / Audio</span><input type="file" onchange="handleFileUpload(event)" class="hidden" accept="image/*,audio/*,.pdf,.txt"></label>
                                     <div id="fileStatus"></div>
                                 </div>
-
-                                <button onclick="executeAI()" id="execBtn" class="neon-glow-btn text-white font-bold px-8 py-3 rounded-xl text-sm flex items-center space-x-2 w-full sm:w-auto justify-center">
-                                    <i class="fa-solid fa-bolt"></i>
-                                    <span>Synthesize Payload</span>
-                                </button>
+                                <button onclick="executeAI()" id="execBtn" class="neon-glow-btn text-white font-bold px-6 py-2.5 rounded-xl text-xs flex items-center space-x-2"><i class="fa-solid fa-bolt"></i><span>Synthesize Payload</span></button>
                             </div>
                         </div>
-
-                        <!-- Output View Stream -->
-                        <div class="neon-border bg-cardbg p-6 rounded-3xl space-y-3 min-h-[250px]">
-                            <div class="flex items-center justify-between border-b border-red-900/30 pb-3">
-                                <span class="text-xs font-bold text-red-400 font-mono uppercase tracking-wider">Cognitive Output Stream</span>
-                                <span id="loader" class="text-xs text-red-400 font-mono hidden animate-pulse">Processing Payload...</span>
-                            </div>
-                            <div id="outputResult" class="text-sm text-gray-300 leading-relaxed font-sans min-h-[150px]">
-                                Awaiting data input...
-                            </div>
+                        <div class="neon-border bg-cardbg p-5 rounded-3xl space-y-2 min-h-[200px]">
+                            <div class="flex justify-between border-b border-red-900/30 pb-2"><span class="text-xs font-bold text-red-400 font-mono">Cognitive Output Stream</span><span id="loader" class="text-xs text-red-400 font-mono hidden animate-pulse">Processing...</span></div>
+                            <div id="outputResult" class="text-sm text-gray-300 leading-relaxed min-h-[120px]">Awaiting payload execution...</div>
                         </div>
                     </div>
                 `;
@@ -296,61 +173,25 @@
             const outputBox = document.getElementById('outputResult');
             const loader = document.getElementById('loader');
 
-            if (!key) {
-                toggleSettingsModal();
-        async function executeAI() {
-            const key = localStorage.getItem('sentis_key');
-            const client = localStorage.getItem('sentis_client') || "Apex Systems";
-            const knowledge = localStorage.getItem('sentis_knowledge') || "";
-            const textVal = document.getElementById('userInput').value.trim();
-            const outputBox = document.getElementById('outputResult');
-            const loader = document.getElementById('loader');
-
-            if (!key) {
-                toggleSettingsModal();
-                alert("Please configure your Gemini API Key first!");
-                return;
-            }
-            if (!textVal && !attachedFile) {
-                outputBox.innerHTML = `<span class="text-amber-400">⚠️ Please provide text or attach a media file before running.</span>`;
-                return;
-            }
+            if (!key) { toggleSettingsModal(); alert("Please save your Gemini API Key first!"); return; }
+            if (!textVal && !attachedFile) { outputBox.innerHTML = `<span class="text-amber-400">⚠️ Please provide text or attach a file.</span>`; return; }
 
             loader.classList.remove('hidden');
-            outputBox.innerHTML = `⚡ Initializing ${modules[currentView].title} execution stream...`;
+            outputBox.innerHTML = "⚡ Processing request...";
 
             const mod = modules[currentView];
             const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
-
-            const parts = [
-                { text: `Tenant: "${client}". Custom Business Rules & Policies: "${knowledge}". System Role: ${mod.desc}. Prompt input: ${textVal}` }
-            ];
-
-            if (attachedFile) {
-                parts.push({
-                    inline_data: {
-                        mime_type: attachedFile.mimeType,
-                        data: attachedFile.data
-                    }
-                });
-            }
+            const parts = [{ text: `Tenant: "${client}". Guidelines: "${knowledge}". Task: ${mod.desc}. Prompt: ${textVal}` }];
+            if (attachedFile) parts.push({ inline_data: { mime_type: attachedFile.mimeType, data: attachedFile.data } });
 
             try {
-                const res = await fetch(endpoint, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: parts }] })
-                });
-
+                const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts }] }) });
                 const data = await res.json();
-                const resultText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+                const resultText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No output generated.";
                 outputBox.innerHTML = marked.parse(resultText);
-
             } catch (err) {
                 outputBox.innerHTML = `<span class="text-red-500">❌ Error: ${err.message}</span>`;
-            } finally {
-                loader.classList.add('hidden');
-            }
+            } finally { loader.classList.add('hidden'); }
         }
     </script>
 </body>
