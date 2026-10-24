@@ -1,197 +1,169 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SENTIS OS | Enterprise AI Hub</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENTIS OS | Enterprise Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#08080a', cardbg: 'rgba(18, 18, 24, 0.9)', neonred: '#ff2a5f' } } } }
-    </script>
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#08080a', cardbg: 'rgba(18, 18, 24, 0.9)' } } } }</script>
     <style>
-        ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: #08080a; } ::-webkit-scrollbar-thumb { background: #3a0a10; border-radius: 10px; }
-        .neon-border { border: 1px solid rgba(255, 42, 95, 0.35); box-shadow: 0 0 15px rgba(255, 42, 95, 0.15); transition: all 0.25s ease; }
-        .neon-border:hover { border-color: rgba(255, 42, 95, 0.85); box-shadow: 0 0 25px rgba(255, 42, 95, 0.4); transform: translateY(-3px); }
-        .neon-glow-btn { background: linear-gradient(135deg, #dc2626, #991b1b); box-shadow: 0 0 20px rgba(220, 38, 38, 0.4); }
+        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #3a0a10; border-radius: 8px; }
+        .neon-border { border: 1px solid rgba(255, 42, 95, 0.35); box-shadow: 0 0 15px rgba(255, 42, 95, 0.15); transition: 0.2s; }
+        .neon-border:hover { border-color: rgba(255, 42, 95, 0.85); transform: translateY(-2px); }
+        .neon-btn { background: linear-gradient(135deg, #dc2626, #991b1b); box-shadow: 0 0 15px rgba(220, 38, 38, 0.4); }
     </style>
 </head>
-<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col antialiased selection:bg-red-600 selection:text-white">
+<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
 
-    <header class="border-b border-red-900/30 bg-darkbg/95 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+    <header class="border-b border-red-900/30 bg-darkbg/95 px-6 py-3.5 flex justify-between items-center sticky top-0 z-50">
         <div class="flex items-center space-x-3">
             <div class="w-3 h-3 bg-red-600 rounded-full animate-ping"></div>
-            <span class="text-xl font-black tracking-widest text-white font-mono">SENTIS<span class="text-red-500 text-xs ml-2 bg-red-950/80 px-2 py-0.5 rounded border border-red-800/50">PRO v4.1</span></span>
+            <span class="text-xl font-black tracking-widest text-white font-mono">SENTIS<span class="text-red-500 text-xs ml-2 bg-red-950 px-2 py-0.5 rounded border border-red-800">v5.0</span></span>
         </div>
         <div class="text-center">
-            <h1 id="headerClientName" class="text-lg font-bold tracking-wider text-red-500 font-mono">Apex Systems</h1>
-            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-mono">Enterprise AI Tenant Hub</p>
+            <h1 id="hClient" class="text-md font-bold text-red-500 font-mono">Apex Systems</h1>
+            <p id="hLic" class="text-[9px] text-emerald-400 font-mono">● Licensed Enterprise</p>
         </div>
-        <button onclick="toggleSettingsModal()" class="text-xs bg-red-950/40 hover:bg-red-900/50 text-red-200 px-3.5 py-2 rounded-xl border border-red-800/50 flex items-center space-x-2">
-            <i class="fa-solid fa-building-user text-red-500"></i>
-            <span class="hidden sm:inline font-semibold">Business Info & Policy</span>
+        <button onclick="toggleModal()" class="text-xs bg-red-950/40 text-red-200 px-3 py-2 rounded-xl border border-red-800 flex items-center space-x-2">
+            <i class="fa-solid fa-sliders text-red-500"></i><span class="hidden sm:inline">Tenant Setup</span>
         </button>
     </header>
 
     <main class="flex-1 p-4 md:p-8 flex flex-col max-w-7xl w-full mx-auto">
-        <div id="appWorkspace" class="flex-1 flex flex-col justify-center"></div>
+        <div id="workspace" class="flex-1 flex flex-col justify-center"></div>
     </main>
 
-    <div id="settingsModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-darkbg max-w-lg w-full p-6 rounded-3xl border border-red-800/50 space-y-4 shadow-2xl">
+    <div id="modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-darkbg max-w-lg w-full p-6 rounded-3xl border border-red-800 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-red-900/30 pb-3">
-                <h3 class="text-md font-bold text-white flex items-center space-x-2"><i class="fa-solid fa-sliders text-red-500"></i><span>Business Profile & Engine Config</span></h3>
-                <button onclick="toggleSettingsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-sm font-bold text-white"><i class="fa-solid fa-sliders text-red-500 mr-2"></i>Enterprise Vault Setup</h3>
+                <button onclick="toggleModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-3">
-                <div>
-                    <label class="text-xs font-semibold text-gray-300 block mb-1">Company / Business Name</label>
-                    <input type="text" id="clientNameInput" placeholder="e.g. Apex Systems" class="w-full bg-black border border-red-900/40 text-sm p-3 rounded-xl text-white focus:outline-none focus:border-red-500">
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="text-[11px] text-gray-300 block mb-1">Company Name</label><input type="text" id="iClient" class="w-full bg-black border border-red-900/40 text-xs p-2.5 rounded-xl text-white"></div>
+                    <div><label class="text-[11px] text-gray-300 block mb-1">API Key</label><input type="password" id="iKey" class="w-full bg-black border border-red-900/40 text-xs p-2.5 rounded-xl text-white"></div>
                 </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-300 block mb-1">Gemini API Key</label>
-                    <input type="password" id="apiKeyInput" placeholder="Paste Gemini API Key" class="w-full bg-black border border-red-900/40 text-sm p-3 rounded-xl text-white focus:outline-none focus:border-red-500">
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="text-[11px] text-gray-300 block mb-1">Logo URL</label><input type="text" id="iLogo" class="w-full bg-black border border-red-900/40 text-xs p-2.5 rounded-xl text-white"></div>
+                    <div><label class="text-[11px] text-gray-300 block mb-1">License Expiry</label><input type="date" id="iExpiry" class="w-full bg-black border border-red-900/40 text-xs p-2.5 rounded-xl text-white"></div>
                 </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-300 block mb-1">Business Policies & SOP Guidelines</label>
-                    <textarea id="knowledgeInput" rows="3" placeholder="Enter return policies, service details, pricing rules..." class="w-full bg-black border border-red-900/40 text-xs p-3 rounded-xl text-gray-300 resize-none focus:outline-none focus:border-red-500"></textarea>
-                </div>
+                <div><label class="text-[11px] text-gray-300 block mb-1">Knowledge Vault & Policies</label><textarea id="iKnow" rows="3" class="w-full bg-black border border-red-900/40 text-xs p-2.5 rounded-xl text-gray-300 resize-none" placeholder="Pricing, refund rules, SOPs..."></textarea></div>
             </div>
-            <div class="pt-2 flex justify-end space-x-3">
-                <button onclick="toggleSettingsModal()" class="px-4 py-2 text-xs text-gray-400">Cancel</button>
-                <button onclick="saveSettings()" class="neon-glow-btn text-white text-xs font-bold px-5 py-2.5 rounded-xl">Save Profile</button>
+            <div class="pt-2 flex justify-between items-center">
+                <button onclick="copyLink()" class="bg-red-950/40 border border-red-800 text-red-300 text-xs px-3 py-2 rounded-xl"><i class="fa-solid fa-link mr-1"></i> Copy Client URL</button>
+                <div class="flex space-x-2">
+                    <button onclick="toggleModal()" class="px-3 py-2 text-xs text-gray-400">Cancel</button>
+                    <button onclick="saveVault()" class="neon-btn text-white text-xs font-bold px-4 py-2 rounded-xl">Save</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const modules = {
-            support: { title: "Support Brain", tagline: "Autonomous Customer Support Engine", icon: "fa-headset", desc: "Automates 24/7 customer queries using custom company policies." },
-            inbox: { title: "Inbox Command", tagline: "Email Summarizer & Draft Generator", icon: "fa-inbox", desc: "Summarizes client threads & generates high-converting drafts." },
-            qualify: { title: "Lead Qualify Engine", tagline: "Inbound Prospect Scoring", icon: "fa-filter", desc: "Scores intent (1-10), budget tier, and closing strategy." },
-            proposal: { title: "Deal Proposal Generator", tagline: "Automated Commercial Contract Builder", icon: "fa-file-contract", desc: "Converts meeting notes into structured sales proposals." },
-            sync: { title: "SOP Knowledge Co-Pilot", tagline: "Internal Policy Guidance System", icon: "fa-brain", desc: "Instant step-by-step guidance on company standard operating procedures." },
-            call: { title: "Call Intelligence Hub", tagline: "Transcript & Media Action Extractor", icon: "fa-microphone-lines", desc: "Extracts key decisions, objections, and team action items." }
+        const mods = {
+            inbox: { title: "Inbox Command", icon: "fa-inbox", desc: "Summarizes client email threads & generates high-converting drafts." },
+            qualify: { title: "Lead Qualify Engine", icon: "fa-filter", desc: "Scores prospect intent (1-10), budget tier, and closing strategy." },
+            proposal: { title: "Deal Proposal Generator", icon: "fa-file-contract", desc: "Turns raw notes into structured commercial proposals instantly." },
+            sync: { title: "SOP Knowledge Co-Pilot", icon: "fa-brain", desc: "Instant step-by-step guidance on internal standard operating procedures." },
+            call: { title: "Call Intelligence Hub", icon: "fa-microphone-lines", desc: "Extracts key decisions, objections, and assigned team action items." },
+            adcopy: { title: "Ad Copy Matrix", icon: "fa-rectangle-ad", desc: "Generates high-converting ad copy for Meta, Google, and LinkedIn." },
+            competitor: { title: "Competitor Radar", icon: "fa-radar", desc: "Analyzes competitor strategy, weaknesses, and positioning tactics." },
+            script: { title: "Sales Script Builder", icon: "fa-scroll", desc: "Generates closing scripts and counters for client sales objections." },
+            churn: { title: "Client Churn Shield", icon: "fa-shield-halved", desc: "Monitors client sentiment and drafts churn prevention strategies." },
+            onboarding: { title: "Onboarding Architect", icon: "fa-diagram-project", desc: "Generates automated kickoff roadmaps and welcome documentation." }
         };
 
-        let currentView = 'grid', attachedFile = null;
+        let view = 'grid', fileObj = null, tenant = new URLSearchParams(window.location.search).get('client') || 'default';
+        const sk = k => `sentis_${tenant}_${k}`;
 
-        window.addEventListener('DOMContentLoaded', () => { loadConfig(); renderApp(); });
+        window.addEventListener('DOMContentLoaded', () => { loadVault(); render(); });
 
-        function loadConfig() {
-            const client = localStorage.getItem('sentis_client') || "Apex Systems";
-            document.getElementById('headerClientName').innerText = client;
-            document.getElementById('clientNameInput').value = client;
-            document.getElementById('apiKeyInput').value = localStorage.getItem('sentis_key') || "";
-            document.getElementById('knowledgeInput').value = localStorage.getItem('sentis_knowledge') || "";
+        function loadVault() {
+            document.getElementById('hClient').innerText = localStorage.getItem(sk('client')) || "Apex Systems";
+            document.getElementById('iClient').value = localStorage.getItem(sk('client')) || "Apex Systems";
+            document.getElementById('iKey').value = localStorage.getItem(sk('key')) || "";
+            document.getElementById('iLogo').value = localStorage.getItem(sk('logo')) || "";
+            document.getElementById('iKnow').value = localStorage.getItem(sk('knowledge')) || "";
+            document.getElementById('iExpiry').value = localStorage.getItem(sk('expiry')) || "2028-12-31";
+            
+            const exp = localStorage.getItem(sk('expiry')) || "2028-12-31";
+            document.getElementById('hLic').innerText = new Date().toISOString().split('T')[0] > exp ? "● Expired" : `● Licensed (${exp})`;
         }
 
-        function toggleSettingsModal() { document.getElementById('settingsModal').classList.toggle('hidden'); }
-
-        function saveSettings() {
-            const client = document.getElementById('clientNameInput').value.trim() || "Apex Systems";
-            localStorage.setItem('sentis_client', client);
-            localStorage.setItem('sentis_key', document.getElementById('apiKeyInput').value.trim());
-            localStorage.setItem('sentis_knowledge', document.getElementById('knowledgeInput').value.trim());
-            document.getElementById('headerClientName').innerText = client;
-            toggleSettingsModal(); renderApp(); alert("🚀 Profile updated!");
+        function toggleModal() { document.getElementById('modal').classList.toggle('hidden'); }
+        
+        function saveVault() {
+            localStorage.setItem(sk('client'), document.getElementById('iClient').value.trim());
+            localStorage.setItem(sk('key'), document.getElementById('iKey').value.trim());
+            localStorage.setItem(sk('logo'), document.getElementById('iLogo').value.trim());
+            localStorage.setItem(sk('knowledge'), document.getElementById('iKnow').value.trim());
+            localStorage.setItem(sk('expiry'), document.getElementById('iExpiry').value);
+            loadVault(); toggleModal(); render(); alert("Saved!");
         }
 
-        function handleFileUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        function copyLink() {
+            navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?client=${document.getElementById('iClient').value.replace(/\s+/g,'')}`);
+            alert("Copied isolated client link!");
+        }
+
+        function handleFile(e) {
+            const f = e.target.files[0]; if(!f)return;
             const r = new FileReader();
-            r.onload = (evt) => {
-                attachedFile = { mimeType: file.type, data: evt.target.result.split(',')[1], name: file.name };
-                document.getElementById('fileStatus').innerHTML = `<span class="text-xs text-red-400 font-mono">📎 ${file.name}</span>`;
-            };
-            r.readAsDataURL(file);
+            r.onload = (evt) => { fileObj = { mimeType: f.type, data: evt.target.result.split(',')[1] }; document.getElementById('fStatus').innerText = `📎 ${f.name}`; };
+            r.readAsDataURL(f);
         }
 
-        function renderApp() {
-            const container = document.getElementById('appWorkspace');
-            const client = localStorage.getItem('sentis_client') || "Apex Systems";
-
-            if (currentView === 'grid') {
-                container.innerHTML = `
-                    <div class="mb-6 text-center space-y-1">
-                        <h2 class="text-2xl font-black uppercase tracking-wider text-white">Select AI Engine</h2>
-                        <p class="text-xs text-gray-400 font-mono">Active Tenant: ${client}</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto w-full">
-                        ${Object.keys(modules).map(key => {
-                            const mod = modules[key];
-                            return `
-                                <div onclick="currentView='${key}';renderApp();" class="neon-border bg-cardbg p-5 rounded-3xl cursor-pointer flex flex-col justify-between space-y-4 group">
-                                    <div class="flex justify-between items-center">
-                                        <div class="w-10 h-10 bg-red-950/60 border border-red-800/50 rounded-xl flex items-center justify-center text-red-500 text-lg group-hover:scale-110 transition"><i class="fa-solid ${mod.icon}"></i></div>
-                                        <span class="text-[10px] font-mono text-red-400 bg-red-950/80 px-2 py-0.5 rounded border border-red-900/40">ONLINE</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-bold text-white group-hover:text-red-400 transition">${mod.title}</h3>
-                                        <p class="text-xs text-gray-400 mt-1 leading-relaxed">${mod.desc}</p>
-                                    </div>
-                                    <div class="text-xs font-semibold text-red-400 group-hover:translate-x-1 transition flex items-center">Launch Engine <i class="fa-solid fa-arrow-right ml-2 text-[10px]"></i></div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
+        function render() {
+            const box = document.getElementById('workspace');
+            if (view === 'grid') {
+                box.innerHTML = `
+                    <div class="mb-5 text-center"><h2 class="text-xl font-black uppercase text-white">10 Enterprise AI Engines</h2><p class="text-xs text-gray-400 font-mono">Tenant: ${localStorage.getItem(sk('client'))||'Apex'}</p></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto w-full">
+                        ${Object.keys(mods).map(k => `
+                            <div onclick="view='${k}';render();" class="neon-border bg-cardbg p-4 rounded-2xl cursor-pointer flex flex-col justify-between space-y-3">
+                                <div class="flex justify-between items-center"><div class="w-8 h-8 bg-red-950 border border-red-800 rounded-lg flex items-center justify-center text-red-500"><i class="fa-solid ${mods[k].icon}"></i></div><span class="text-[9px] font-mono text-red-400 bg-red-950 px-2 py-0.5 rounded">ENTERPRISE</span></div>
+                                <div><h3 class="text-md font-bold text-white">${mods[k].title}</h3><p class="text-[11px] text-gray-400 mt-0.5">${mods[k].desc}</p></div>
+                                <div class="text-[11px] font-semibold text-red-400 flex items-center">Launch <i class="fa-solid fa-arrow-right ml-1"></i></div>
+                            </div>
+                        `).join('')}
+                    </div>`;
             } else {
-                const mod = modules[currentView];
-                container.innerHTML = `
-                    <div class="space-y-5 max-w-5xl mx-auto w-full">
-                        <div class="flex items-center justify-between border-b border-red-900/30 pb-3">
-                            <button onclick="currentView='grid';attachedFile=null;renderApp();" class="bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs px-3.5 py-2 rounded-xl border border-red-800/50 font-semibold"><i class="fa-solid fa-chevron-left mr-1"></i> Back to Grid Hub</button>
-                            <div class="flex items-center space-x-2"><i class="fa-solid ${mod.icon} text-red-500 text-lg"></i><span class="text-md font-bold text-white">${mod.title}</span></div>
-                        </div>
-                        <div class="neon-border bg-cardbg p-5 rounded-3xl space-y-3">
-                            <textarea id="userInput" rows="4" placeholder="Enter instructions or data for ${mod.title}..." class="w-full bg-black border border-red-900/40 rounded-xl p-3 text-sm text-gray-200 focus:outline-none focus:border-red-500 resize-none"></textarea>
-                            <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-                                <div class="flex items-center space-x-2">
-                                    <label class="cursor-pointer bg-red-950/40 border border-red-800/50 text-red-300 text-xs px-3.5 py-2 rounded-xl flex items-center space-x-1.5"><i class="fa-solid fa-paperclip text-red-500"></i><span>Attach Media / Audio</span><input type="file" onchange="handleFileUpload(event)" class="hidden" accept="image/*,audio/*,.pdf,.txt"></label>
-                                    <div id="fileStatus"></div>
-                                </div>
-                                <button onclick="executeAI()" id="execBtn" class="neon-glow-btn text-white font-bold px-6 py-2.5 rounded-xl text-xs flex items-center space-x-2"><i class="fa-solid fa-bolt"></i><span>Synthesize Payload</span></button>
+                const m = mods[view];
+                box.innerHTML = `
+                    <div class="space-y-4 max-w-4xl mx-auto w-full">
+                        <button onclick="view='grid';fileObj=null;render();" class="bg-red-950/40 text-red-300 text-xs px-3 py-1.5 rounded-xl border border-red-800"><i class="fa-solid fa-chevron-left mr-1"></i> Back</button>
+                        <div class="neon-border bg-cardbg p-4 rounded-2xl space-y-3">
+                            <h2 class="text-md font-bold text-white"><i class="fa-solid ${m.icon} text-red-500 mr-2"></i>${m.title}</h2>
+                            <textarea id="prompt" rows="3" class="w-full bg-black border border-red-900/40 rounded-xl p-3 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none" placeholder="Enter payload or instructions..."></textarea>
+                            <div class="flex justify-between items-center">
+                                <label class="cursor-pointer bg-red-950/40 border border-red-800 text-red-300 text-xs px-3 py-2 rounded-xl"><i class="fa-solid fa-paperclip text-red-500 mr-1"><span>Attach File</span></i><input type="file" onchange="handleFile(event)" class="hidden"></label>
+                                <span id="fStatus" class="text-xs text-gray-400 font-mono"></span>
+                                <button onclick="runAI()" class="neon-btn text-white font-bold px-5 py-2 rounded-xl text-xs"><i class="fa-solid fa-bolt mr-1"></i> Synthesize</button>
                             </div>
                         </div>
-                        <div class="neon-border bg-cardbg p-5 rounded-3xl space-y-2 min-h-[200px]">
-                            <div class="flex justify-between border-b border-red-900/30 pb-2"><span class="text-xs font-bold text-red-400 font-mono">Cognitive Output Stream</span><span id="loader" class="text-xs text-red-400 font-mono hidden animate-pulse">Processing...</span></div>
-                            <div id="outputResult" class="text-sm text-gray-300 leading-relaxed min-h-[120px]">Awaiting payload execution...</div>
+                        <div class="neon-border bg-cardbg p-4 rounded-2xl space-y-2 min-h-[180px]">
+                            <div class="flex justify-between border-b border-red-900/30 pb-2"><span class="text-xs font-bold text-red-400 font-mono">Output</span><span id="load" class="text-xs text-red-400 font-mono hidden animate-pulse">Running...</span></div>
+                            <div id="out" class="text-xs text-gray-300 leading-relaxed">Awaiting execution...</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }
         }
 
-        async function executeAI() {
-            const key = localStorage.getItem('sentis_key');
-            const client = localStorage.getItem('sentis_client') || "Apex Systems";
-            const knowledge = localStorage.getItem('sentis_knowledge') || "";
-            const textVal = document.getElementById('userInput').value.trim();
-            const outputBox = document.getElementById('outputResult');
-            const loader = document.getElementById('loader');
-
-            if (!key) { toggleSettingsModal(); alert("Please save your Gemini API Key first!"); return; }
-            if (!textVal && !attachedFile) { outputBox.innerHTML = `<span class="text-amber-400">⚠️ Please provide text or attach a file.</span>`; return; }
-
-            loader.classList.remove('hidden');
-            outputBox.innerHTML = "⚡ Processing request...";
-
-            const mod = modules[currentView];
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
-            const parts = [{ text: `Tenant: "${client}". Guidelines: "${knowledge}". Task: ${mod.desc}. Prompt: ${textVal}` }];
-            if (attachedFile) parts.push({ inline_data: { mime_type: attachedFile.mimeType, data: attachedFile.data } });
-
+        async function runAI() {
+            const key = localStorage.getItem(sk('key')), client = localStorage.getItem(sk('client')) || "Apex", know = localStorage.getItem(sk('knowledge')) || "", txt = document.getElementById('prompt').value.trim(), out = document.getElementById('out'), load = document.getElementById('load');
+            if(!key){ toggleModal(); alert("Add API key first!"); return; }
+            if(!txt && !fileObj){ out.innerHTML = "⚠️ Provide input."; return; }
+            load.classList.remove('hidden'); out.innerHTML = "⚡ Processing...";
+            const parts = [{ text: `Client: ${client}. Vault: ${know}. Engine: ${mods[view].desc}. Input: ${txt}` }];
+            if(fileObj) parts.push({ inline_data: { mime_type: fileObj.mimeType, data: fileObj.data } });
             try {
-                const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts }] }) });
-                const data = await res.json();
-                const resultText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No output generated.";
-                outputBox.innerHTML = marked.parse(resultText);
-            } catch (err) {
-                outputBox.innerHTML = `<span class="text-red-500">❌ Error: ${err.message}</span>`;
-            } finally { loader.classList.add('hidden'); }
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts }] }) });
+                const d = await res.json();
+                out.innerHTML = marked.parse(d?.candidates?.[0]?.content?.parts?.[0]?.text || "No output.");
+            } catch(e) { out.innerHTML = "❌ Error: " + e.message; }
+            finally { load.classList.add('hidden'); }
         }
     </script>
 </body>
