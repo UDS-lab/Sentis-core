@@ -42,7 +42,7 @@
             <p class="text-xs text-gray-400">Enter your company license key, or your secret founder master key to open Admin mode.</p>
             <input type="password" id="keyInput" placeholder="Enter key..." class="w-full bg-black border border-red-900/40 text-xs p-3 rounded-xl text-white text-center font-mono focus:outline-none focus:border-red-500">
             <button onclick="submitKey()" class="neon-btn text-white text-xs font-bold w-full py-3 rounded-xl">Authenticate</button>
-            <button onclick="closeSetupModal()" class="text-xs text-gray-500 hover:text-gray-300">Cancel</button>
+            <button onclick="closeSetupModal()" class="text-xs text-gray-500 hover:text-gray-300 mt-2 block mx-auto">Cancel</button>
         </div>
     </div>
 
@@ -61,7 +61,7 @@
         };
 
         let view = 'grid', fileObj = null;
-        const MASTER_ADMIN_KEY = "UDS-MASTER-2026"; // <--- Your Secret Master Key
+        const MASTER_ADMIN_KEY = "UDS-MASTER-2026";
 
         window.addEventListener('DOMContentLoaded', () => {
             checkCurrentMode();
@@ -97,7 +97,6 @@
                 return;
             }
 
-            // Check if it's a client key from registry
             let registry = JSON.parse(localStorage.getItem('sentis_master_registry') || '[]');
             let found = registry.find(r => r.key === val);
             if (found) {
@@ -122,7 +121,7 @@
             box.innerHTML = `
                 <div class="space-y-6">
                     <div class="flex justify-between items-center bg-red-950/20 p-4 rounded-2xl border border-red-900/40">
-                        <span class="text-xs text-red-400 font-mono">You are in Master Admin Mode. Clients will see the normal app.</span>
+                        <span class="text-xs text-red-400 font-mono">Master Admin Mode Active.</span>
                         <button onclick="exitAdmin()" class="text-xs bg-red-950 text-red-300 px-3 py-1.5 rounded-xl border border-red-800">Switch to Client View</button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -242,7 +241,7 @@
             let key = localStorage.getItem(`sentis_${activeClient}_key`) || prompt("Enter your company Gemini API Key:");
             if(key && !localStorage.getItem(`sentis_${activeClient}_key`)) localStorage.setItem(`sentis_${activeClient}_key`, key);
             
-            const txt = document.getElementById('prompt'].value.trim(), out = document.getElementById('out'), load = document.getElementById('load');
+            const txt = document.getElementById('prompt').value.trim(), out = document.getElementById('out'), load = document.getElementById('load');
             if(!key){ alert("API key required!"); return; }
             if(!txt && !fileObj){ out.innerHTML = "⚠️ Provide input."; return; }
 
