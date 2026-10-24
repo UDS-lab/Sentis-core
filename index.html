@@ -165,6 +165,16 @@
             } catch(e) { out.innerHTML = "❌ Error: " + e.message; }
             finally { load.classList.add('hidden'); }
         }
-    </script>
+    <script>
+    // Disable right-click context menu
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    
+    // Disable F12, Ctrl+U, Ctrl+Shift+I, and Ctrl+Shift+J
+    document.onkeydown = function(e) {
+        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) {
+            return false;
+        }
+    }
+</script>
 </body>
 </html>
