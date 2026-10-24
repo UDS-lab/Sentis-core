@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SENTIS OS | Enterprise Master & Client Suite</title>
+    <title>SENTIS OS | Enterprise Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,16 +19,14 @@
     <header class="border-b border-red-900/30 bg-darkbg/95 px-6 py-3.5 flex justify-between items-center sticky top-0 z-50">
         <div class="flex items-center space-x-3">
             <div class="w-3 h-3 bg-red-600 rounded-full animate-ping"></div>
-            <span class="text-xl font-black tracking-widest text-white font-mono">SENTIS<span class="text-red-500 text-xs ml-2 bg-red-950 px-2 py-0.5 rounded border border-red-800">v6.0</span></span>
+            <span class="text-xl font-black tracking-widest text-white font-mono cursor-pointer" ondblclick="triggerMasterAccess()">SENTIS<span class="text-red-500 text-xs ml-2 bg-red-950 px-2 py-0.5 rounded border border-red-800">OS</span></span>
         </div>
         <div class="text-center">
-            <h1 id="hTitle" class="text-md font-bold text-red-500 font-mono">Loading...</h1>
+            <h1 id="hTitle" class="text-md font-bold text-red-500 font-mono">Enterprise Hub</h1>
             <p id="hSub" class="text-[9px] text-emerald-400 font-mono">● Secure System</p>
         </div>
-        <div class="flex items-center space-x-2">
-            <button onclick="openPortalToggle()" id="portalToggleBtn" class="text-xs bg-red-950/40 text-red-200 px-3 py-2 rounded-xl border border-red-800 flex items-center space-x-2">
-                <i class="fa-solid fa-user-gear text-red-500"></i><span id="portalToggleText">Switch to Admin</span>
-            </button>
+        <div>
+            <button onclick="openSetupModal()" class="text-xs bg-red-950/40 text-red-200 px-3 py-2 rounded-xl border border-red-800"><i class="fa-solid fa-key text-red-500 mr-1"></i> Enter Key</button>
         </div>
     </header>
 
@@ -36,14 +34,15 @@
         <div id="workspace" class="flex-1 flex flex-col justify-center"></div>
     </main>
 
-    <!-- Client Activation Modal -->
-    <div id="activateModal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <!-- License / Master Key Modal -->
+    <div id="setupModal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-darkbg max-w-md w-full p-6 rounded-3xl border border-red-800 space-y-4 shadow-2xl text-center">
-            <i class="fa-solid fa-lock text-red-500 text-3xl animate-pulse"></i>
-            <h3 class="text-md font-bold text-white">Enter Enterprise License Key</h3>
-            <p class="text-xs text-gray-400">Your instance is locked. Enter the activation key provided by UDS Admin.</p>
-            <input type="text" id="activationInput" placeholder="SENTIS-XXXX-XXXX" class="w-full bg-black border border-red-900/40 text-xs p-3 rounded-xl text-white text-center font-mono focus:outline-none focus:border-red-500">
-            <button onclick="verifyClientKey()" class="neon-btn text-white text-xs font-bold w-full py-3 rounded-xl">Activate License</button>
+            <i class="fa-solid fa-shield-halved text-red-500 text-3xl animate-pulse"></i>
+            <h3 class="text-md font-bold text-white">Enter License or Master Key</h3>
+            <p class="text-xs text-gray-400">Enter your company license key, or your secret founder master key to open Admin mode.</p>
+            <input type="password" id="keyInput" placeholder="Enter key..." class="w-full bg-black border border-red-900/40 text-xs p-3 rounded-xl text-white text-center font-mono focus:outline-none focus:border-red-500">
+            <button onclick="submitKey()" class="neon-btn text-white text-xs font-bold w-full py-3 rounded-xl">Authenticate</button>
+            <button onclick="closeSetupModal()" class="text-xs text-gray-500 hover:text-gray-300">Cancel</button>
         </div>
     </div>
 
@@ -62,111 +61,101 @@
         };
 
         let view = 'grid', fileObj = null;
-        const urlParams = new URLSearchParams(window.location.search);
-        let isAdmin = urlParams.get('admin') === 'uds';
-        let tenant = urlParams.get('client') || 'ApexSystems';
-        const sk = k => `sentis_${tenant}_${k}`;
+        const MASTER_ADMIN_KEY = "UDS-MASTER-2026"; // <--- Your Secret Master Key
 
         window.addEventListener('DOMContentLoaded', () => {
-            initSystem();
+            checkCurrentMode();
         });
 
-        function initSystem() {
-            if (isAdmin) {
-                document.getElementById('hTitle').innerText = "UDS Master Admin";
-                document.getElementById('hSub').innerText = "● Global Oversight";
-                document.getElementById('portalToggleText').innerText = "Client View";
+        function checkCurrentMode() {
+            let mode = localStorage.getItem('sentis_current_mode') || 'client';
+            if (mode === 'admin') {
                 renderAdminDashboard();
             } else {
-                document.getElementById('hTitle').innerText = tenant;
-                document.getElementById('hSub').innerText = "● Client Portal";
-                document.getElementById('portalToggleText').innerText = "Admin View";
-                checkClientAccess();
-            }
-        }
-
-        function openPortalToggle() {
-            if (isAdmin) {
-                window.location.search = `?client=${tenant}`;
-            } else {
-                const pass = prompt("Enter UDS Master Admin Passkey:");
-                if (pass === "uds2026") {
-                    window.location.search = `?admin=uds`;
-                } else if (pass) {
-                    alert("❌ Incorrect Admin Passkey!");
+                let activeClient = localStorage.getItem('sentis_active_client');
+                if (!activeClient) {
+                    document.getElementById('setupModal').classList.remove('hidden');
+                } else {
+                    document.getElementById('hTitle').innerText = activeClient;
+                    document.getElementById('hSub').innerText = "● Authorized Enterprise";
+                    renderClientGrid();
                 }
             }
         }
 
-        function checkClientAccess() {
-            let registry = JSON.parse(localStorage.getItem('sentis_master_registry') || '[]');
-            let activeKey = localStorage.getItem(sk('activated_key'));
-            
-            let found = registry.find(r => r.client === tenant && r.key === activeKey);
-            if (!found) {
-                document.getElementById('activateModal').classList.remove('hidden');
-            } else {
-                renderClientGrid();
-            }
-        }
+        function openSetupModal() { document.getElementById('setupModal').classList.remove('hidden'); }
+        function closeSetupModal() { document.getElementById('setupModal').classList.add('hidden'); }
+        function triggerMasterAccess() { openSetupModal(); }
 
-        function verifyClientKey() {
-            let inputKey = document.getElementById('activationInput').value.trim();
+        function submitKey() {
+            let val = document.getElementById('keyInput').value.trim();
+            if (val === MASTER_ADMIN_KEY) {
+                localStorage.setItem('sentis_current_mode', 'admin');
+                closeSetupModal();
+                alert("👑 Master Admin Access Granted!");
+                renderAdminDashboard();
+                return;
+            }
+
+            // Check if it's a client key from registry
             let registry = JSON.parse(localStorage.getItem('sentis_master_registry') || '[]');
-            
-            let found = registry.find(r => r.client === tenant && r.key === inputKey);
+            let found = registry.find(r => r.key === val);
             if (found) {
-                localStorage.setItem(sk('activated_key'), inputKey);
-                document.getElementById('activateModal').classList.add('hidden');
-                alert("🚀 License Activated Successfully!");
-                renderClientGrid();
+                localStorage.setItem('sentis_current_mode', 'client');
+                localStorage.setItem('sentis_active_client', found.client);
+                localStorage.setItem('sentis_active_key', val);
+                closeSetupModal();
+                alert(`🚀 Welcome ${found.client}! Workspace Unlocked.`);
+                location.reload();
             } else {
-                alert("❌ Invalid License Key for this tenant!");
+                alert("❌ Invalid License or Master Key.");
             }
         }
 
         // --- ADMIN DASHBOARD ---
         function renderAdminDashboard() {
+            document.getElementById('hTitle').innerText = "UDS Master Control";
+            document.getElementById('hSub').innerText = "● Founder Admin Mode";
             let registry = JSON.parse(localStorage.getItem('sentis_master_registry') || '[]');
             const box = document.getElementById('workspace');
 
             box.innerHTML = `
                 <div class="space-y-6">
+                    <div class="flex justify-between items-center bg-red-950/20 p-4 rounded-2xl border border-red-900/40">
+                        <span class="text-xs text-red-400 font-mono">You are in Master Admin Mode. Clients will see the normal app.</span>
+                        <button onclick="exitAdmin()" class="text-xs bg-red-950 text-red-300 px-3 py-1.5 rounded-xl border border-red-800">Switch to Client View</button>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="neon-border bg-cardbg p-5 rounded-2xl">
-                            <h4 class="text-xs text-gray-400 font-mono">TOTAL ACTIVE CLIENTS</h4>
+                            <h4 class="text-xs text-gray-400 font-mono">TOTAL CLIENTS</h4>
                             <p class="text-2xl font-bold text-white mt-1">${registry.length}</p>
                         </div>
                         <div class="neon-border bg-cardbg p-5 rounded-2xl">
-                            <h4 class="text-xs text-gray-400 font-mono">SYSTEM REVENUE POTENTIAL</h4>
+                            <h4 class="text-xs text-gray-400 font-mono">REVENUE POTENTIAL</h4>
                             <p class="text-2xl font-bold text-emerald-400 mt-1">$${registry.length * 5000}/mo</p>
                         </div>
                         <div class="neon-border bg-cardbg p-5 rounded-2xl flex items-center justify-between">
-                            <div><h4 class="text-xs text-gray-400 font-mono">QUICK ACTION</h4><p class="text-sm font-bold text-red-400 mt-1">Generate License</p></div>
-                            <button onclick="generateNewKeyModal()" class="neon-btn text-white px-4 py-2 rounded-xl text-xs font-bold"><i class="fa-solid fa-plus"></i></button>
+                            <div><h4 class="text-xs text-gray-400 font-mono">ACTION</h4><p class="text-sm font-bold text-red-400 mt-1">Generate Key</p></div>
+                            <button onclick="generateKey()" class="neon-btn text-white px-4 py-2 rounded-xl text-xs font-bold"><i class="fa-solid fa-plus"></i></button>
                         </div>
                     </div>
 
                     <div class="neon-border bg-cardbg p-6 rounded-3xl space-y-4">
-                        <h3 class="text-md font-bold text-white"><i class="fa-solid fa-list-check text-red-500 mr-2"></i>Master Company Directory & Telemetry</h3>
+                        <h3 class="text-md font-bold text-white"><i class="fa-solid fa-list-check text-red-500 mr-2"></i>Master Company Directory</h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs font-mono">
                                 <thead class="border-b border-red-900/40 text-gray-400">
-                                    <tr><th class="pb-3">Company Name</th><th class="pb-3">License Key</th><th class="pb-3">AI Executions</th><th class="pb-3">Expiry</th><th class="pb-3">Actions</th></tr>
+                                    <tr><th class="pb-3">Company</th><th class="pb-3">Key</th><th class="pb-3">Expiry</th><th class="pb-3">Actions</th></tr>
                                 </thead>
                                 <tbody class="divide-y divide-red-950/40">
-                                    ${registry.length === '0' ? '<tr><td colspan="5" class="py-4 text-center text-gray-500">No client licenses generated yet.</td></tr>' : registry.map(r => {
-                                        let usage = localStorage.getItem(`sentis_${r.client}_usage`) || 0;
-                                        return `
-                                            <tr class="hover:bg-red-950/20">
-                                                <td class="py-3 font-bold text-white"><a href="?client=${r.client}" class="text-red-400 hover:underline">${r.client}</a></td>
-                                                <td class="py-3 text-gray-300">${r.key}</td>
-                                                <td class="py-3 text-amber-400 font-bold">${usage} runs</td>
-                                                <td class="py-3 text-gray-400">${r.expiry}</td>
-                                                <td class="py-3"><button onclick="revokeKey('${r.key}')" class="text-red-500 hover:text-red-300"><i class="fa-solid fa-trash"></i> Revoke</button></td>
-                                            </tr>
-                                        `;
-                                    }).join('')}
+                                    ${registry.length === 0 ? '<tr><td colspan="4" class="py-4 text-center text-gray-500">No client licenses generated yet. Click + to create one.</td></tr>' : registry.map(r => `
+                                        <tr class="hover:bg-red-950/20">
+                                            <td class="py-3 font-bold text-white">${r.client}</td>
+                                            <td class="py-3 text-gray-300 font-mono">${r.key}</td>
+                                            <td class="py-3 text-gray-400">${r.expiry}</td>
+                                            <td class="py-3"><button onclick="revoke('${r.key}')" class="text-red-500 hover:text-red-300"><i class="fa-solid fa-trash"></i> Revoke</button></td>
+                                        </tr>
+                                    `).join('')}
                                 </tbody>
                             </table>
                         </div>
@@ -175,23 +164,28 @@
             `;
         }
 
-        function generateNewKeyModal() {
-            let clientName = prompt("Enter Client Company Name (e.g. AcmeCorp):");
-            if (!clientName) return;
-            let cleanName = clientName.replace(/\s+/g, '');
-            let randomCode = 'SENTIS-' + cleanName.toUpperCase() + '-' + Math.floor(1000 + Math.random() * 9000);
-            let expiryDate = prompt("Enter Expiry Date (YYYY-MM-DD):", "2028-12-31");
+        function exitAdmin() {
+            localStorage.setItem('sentis_current_mode', 'client');
+            location.reload();
+        }
+
+        function generateKey() {
+            let name = prompt("Enter Client Company Name (e.g. ApexIndustries):");
+            if (!name) return;
+            let clean = name.replace(/\s+/g, '');
+            let key = 'SENTIS-' + clean.toUpperCase() + '-' + Math.floor(1000 + Math.random() * 9000);
+            let expiry = prompt("Enter Expiry Date (YYYY-MM-DD):", "2028-12-31");
 
             let registry = JSON.parse(localStorage.getItem('sentis_master_registry') || '[]');
-            registry.push({ client: cleanName, key: randomCode, expiry: expiryDate });
+            registry.push({ client: clean, key: key, expiry: expiry });
             localStorage.setItem('sentis_master_registry', JSON.stringify(registry));
 
-            alert(`✅ Generated Key for ${cleanName}:\nKey: ${randomCode}\nClient Link: ${window.location.origin}${window.location.pathname}?client=${cleanName}`);
+            alert(`✅ Generated Key for ${clean}:\nKey: ${key}\nGive this key to your client!`);
             renderAdminDashboard();
         }
 
-        function revokeKey(key) {
-            if (confirm("Are you sure you want to revoke this license?")) {
+        function revoke(key) {
+            if (confirm("Revoke this license?")) {
                 let registry = JSON.parse(localStorage.getItem('sentis_master_registry') || '[]');
                 registry = registry.filter(r => r.key !== key);
                 localStorage.setItem('sentis_master_registry', JSON.stringify(registry));
@@ -204,7 +198,7 @@
             const box = document.getElementById('workspace');
             if (view === 'grid') {
                 box.innerHTML = `
-                    <div class="mb-5 text-center"><h2 class="text-xl font-black uppercase text-white">10 Enterprise AI Engines</h2><p class="text-xs text-gray-400 font-mono">Tenant: ${tenant}</p></div>
+                    <div class="mb-5 text-center"><h2 class="text-xl font-black uppercase text-white">10 Enterprise AI Engines</h2><p class="text-xs text-gray-400 font-mono">Tenant: ${localStorage.getItem('sentis_active_client')}</p></div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto w-full">
                         ${Object.keys(mods).map(k => `
                             <div onclick="view='${k}';renderClientGrid();" class="neon-border bg-cardbg p-4 rounded-2xl cursor-pointer flex flex-col justify-between space-y-3">
@@ -221,7 +215,7 @@
                         <button onclick="view='grid';fileObj=null;renderClientGrid();" class="bg-red-950/40 text-red-300 text-xs px-3 py-1.5 rounded-xl border border-red-800"><i class="fa-solid fa-chevron-left mr-1"></i> Back</button>
                         <div class="neon-border bg-cardbg p-4 rounded-2xl space-y-3">
                             <h2 class="text-md font-bold text-white"><i class="fa-solid ${m.icon} text-red-500 mr-2"></i>${m.title}</h2>
-                            <textarea id="prompt" rows="3" class="w-full bg-black border border-red-900/40 rounded-xl p-3 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none" placeholder="Enter payload or instructions..."></textarea>
+                            <textarea id="prompt" rows="3" class="w-full bg-black border border-red-900/40 rounded-xl p-3 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none" placeholder="Enter prompt or instructions..."></textarea>
                             <div class="flex justify-between items-center">
                                 <label class="cursor-pointer bg-red-950/40 border border-red-800 text-red-300 text-xs px-3 py-2 rounded-xl"><i class="fa-solid fa-paperclip text-red-500 mr-1"><span>Attach File</span></i><input type="file" onchange="handleFile(event)" class="hidden"></label>
                                 <span id="fStatus" class="text-xs text-gray-400 font-mono"></span>
@@ -244,19 +238,16 @@
         }
 
         async function runAI() {
-            const key = localStorage.getItem(sk('key')) || prompt("Enter your Gemini API Key:");
-            if(key && !localStorage.getItem(sk('key'))) localStorage.setItem(sk('key'), key);
+            let activeClient = localStorage.getItem('sentis_active_client');
+            let key = localStorage.getItem(`sentis_${activeClient}_key`) || prompt("Enter your company Gemini API Key:");
+            if(key && !localStorage.getItem(`sentis_${activeClient}_key`)) localStorage.setItem(`sentis_${activeClient}_key`, key);
             
-            const client = tenant, know = localStorage.getItem(sk('knowledge')) || "", txt = document.getElementById('prompt').value.trim(), out = document.getElementById('out'), load = document.getElementById('load');
+            const txt = document.getElementById('prompt'].value.trim(), out = document.getElementById('out'), load = document.getElementById('load');
             if(!key){ alert("API key required!"); return; }
             if(!txt && !fileObj){ out.innerHTML = "⚠️ Provide input."; return; }
 
-            // Track usage for Admin Master Telemetry
-            let usage = parseInt(localStorage.getItem(`sentis_${tenant}_usage`) || 0) + 1;
-            localStorage.setItem(`sentis_${tenant}_usage`, usage);
-
             load.classList.remove('hidden'); out.innerHTML = "⚡ Processing...";
-            const parts = [{ text: `Client: ${client}. Vault: ${know}. Engine: ${mods[view].desc}. Input: ${txt}` }];
+            const parts = [{ text: `Tenant: ${activeClient}. Engine: ${mods[view].desc}. Input: ${txt}` }];
             if(fileObj) parts.push({ inline_data: { mime_type: fileObj.mimeType, data: fileObj.data } });
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts }] }) });
