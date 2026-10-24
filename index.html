@@ -4,21 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SENTIS OS | Enterprise Suite</title>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNFTlRJUyBPUyBFbnRlcnByaXNlIiwKICAic2hvcnRfbmFtZSI6ICJTRU5USVMiLAogICJzdGFydF91cmwiOiAiaW5kZXguaHRtbCIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzA4MDgwYSIsCiAgInRoZW1lX2NvbG9yIjogIiNkYzI2MjYiCn0=">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        tailwind.config = { 
-            darkMode: 'class', 
-            theme: { 
-                extend: { 
-                    colors: { 
-                        darkbg: '#08080a', 
-                        cardbg: 'rgba(18, 18, 24, 0.9)' 
-                    } 
-                } 
-            } 
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#08080a', cardbg: 'rgba(18, 18, 24, 0.9)' } } } }
     </script>
     <style>
         ::-webkit-scrollbar { width: 4px; } 
@@ -33,25 +25,31 @@
     <header class="border-b border-red-900/30 bg-darkbg/95 px-6 py-3.5 flex justify-between items-center sticky top-0 z-50">
         <div class="flex items-center space-x-3">
             <div class="w-3 h-3 bg-red-600 rounded-full animate-ping"></div>
-            <span class="text-xl font-black tracking-widest text-white font-mono">SENTIS<span class="text-red-500 text-xs ml-2 bg-red-950 px-2 py-0.5 rounded border border-red-800">v5.0</span></span>
+            <span class="text-xl font-black tracking-widest text-white font-mono">SENTIS<span class="text-red-500 text-xs ml-2 bg-red-950 px-2 py-0.5 rounded border border-red-800">v5.2</span></span>
         </div>
         <div class="text-center">
             <h1 id="hClient" class="text-md font-bold text-red-500 font-mono">Apex Systems</h1>
             <p id="hLic" class="text-[9px] text-emerald-400 font-mono">● Licensed Enterprise</p>
         </div>
-        <button onclick="toggleModal()" class="text-xs bg-red-950/40 text-red-200 px-3 py-2 rounded-xl border border-red-800 flex items-center space-x-2">
-            <i class="fa-solid fa-sliders text-red-500"></i><span class="hidden sm:inline">Tenant Setup</span>
-        </button>
+        <div class="flex items-center space-x-2">
+            <button onclick="installPWA()" id="installBtn" class="hidden text-xs bg-emerald-950/60 text-emerald-300 px-3 py-2 rounded-xl border border-emerald-800 flex items-center space-x-1.5">
+                <i class="fa-solid fa-download"></i><span class="hidden sm:inline">Install App</span>
+            </button>
+            <button onclick="toggleModal()" class="text-xs bg-red-950/40 text-red-200 px-3 py-2 rounded-xl border border-red-800 flex items-center space-x-2">
+                <i class="fa-solid fa-sliders text-red-500"></i><span class="hidden sm:inline">Tenant Setup</span>
+            </button>
+        </div>
     </header>
 
     <main class="flex-1 p-4 md:p-8 flex flex-col max-w-7xl w-full mx-auto">
         <div id="workspace" class="flex-1 flex flex-col justify-center"></div>
     </main>
 
+    <!-- Tenant & Secure License Setup Modal -->
     <div id="modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-darkbg max-w-lg w-full p-6 rounded-3xl border border-red-800 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-red-900/30 pb-3">
-                <h3 class="text-sm font-bold text-white"><i class="fa-solid fa-sliders text-red-500 mr-2"></i>Enterprise Vault Setup</h3>
+                <h3 class="text-sm font-bold text-white"><i class="fa-solid fa-shield-halved text-red-500 mr-2"></i>Enterprise Vault & License Activation</h3>
                 <button onclick="toggleModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-3">
@@ -61,17 +59,17 @@
                         <input type="text" id="iClient" class="w-full bg-black border border-red-900/40 text-xs p-2.5 rounded-xl text-white focus:outline-none focus:border-red-500">
                     </div>
                     <div>
-                        <label class="text-[11px] text-gray-300 block mb-1">API Key</label>
+                        <label class="text-[11px] text-gray-300 block mb-1">Gemini API Key</label>
                         <input type="password" id="iKey" class="w-full bg-black border border-red-900/40 text-xs p-2.5 rounded-xl text-white focus:outline-none focus:border-red-500">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-[11px] text-gray-300 block mb-1">Logo URL</label>
-                        <input type="text" id="iLogo" class="w-full bg-black border border-red-900/40 text-xs p-2.5 rounded-xl text-white focus:outline-none focus:border-red-500">
+                        <label class="text-[11px] text-gray-300 block mb-1">Enterprise Activation License Key</label>
+                        <input type="password" id="iLicKey" placeholder="SENTIS-XXXX-YYYY" class="w-full bg-black border border-red-900/40 text-xs p-2.5 rounded-xl text-white focus:outline-none focus:border-red-500">
                     </div>
                     <div>
-                        <label class="text-[11px] text-gray-300 block mb-1">License Expiry</label>
+                        <label class="text-[11px] text-gray-300 block mb-1">License Expiry Date</label>
                         <input type="date" id="iExpiry" class="w-full bg-black border border-red-900/40 text-xs p-2.5 rounded-xl text-white focus:outline-none focus:border-red-500">
                     </div>
                 </div>
@@ -81,10 +79,10 @@
                 </div>
             </div>
             <div class="pt-2 flex justify-between items-center">
-                <button onclick="copyLink()" class="bg-red-950/40 border border-red-800 text-red-300 text-xs px-3 py-2 rounded-xl"><i class="fa-solid fa-link mr-1"></i> Copy Client URL</button>
+                <button onclick="copyLink()" class="bg-red-950/40 border border-red-800 text-red-300 text-xs px-3 py-2 rounded-xl"><i class="fa-solid fa-link mr-1"></i> Copy Secure Client URL</button>
                 <div class="flex space-x-2">
                     <button onclick="toggleModal()" class="px-3 py-2 text-xs text-gray-400">Cancel</button>
-                    <button onclick="saveVault()" class="neon-btn text-white text-xs font-bold px-4 py-2 rounded-xl">Save</button>
+                    <button onclick="saveVault()" class="neon-btn text-white text-xs font-bold px-4 py-2 rounded-xl">Save & Authorize</button>
                 </div>
             </div>
         </div>
@@ -105,36 +103,70 @@
         };
 
         let view = 'grid', fileObj = null, tenant = new URLSearchParams(window.location.search).get('client') || 'default';
+        let deferredPrompt = null;
         const sk = k => `sentis_${tenant}_${k}`;
 
-        window.addEventListener('DOMContentLoaded', () => { loadVault(); render(); });
+        window.addEventListener('DOMContentLoaded', () => { loadVault(); checkAccess(); render(); });
+
+        // PWA Install Prompt Capture
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').classList.remove('hidden');
+        });
+
+        async function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') { document.getElementById('installBtn').classList.add('hidden'); }
+                deferredPrompt = null;
+            }
+        }
 
         function loadVault() {
             document.getElementById('hClient').innerText = localStorage.getItem(sk('client')) || "Apex Systems";
             document.getElementById('iClient').value = localStorage.getItem(sk('client')) || "Apex Systems";
             document.getElementById('iKey').value = localStorage.getItem(sk('key')) || "";
-            document.getElementById('iLogo').value = localStorage.getItem(sk('logo')) || "";
+            document.getElementById('iLicKey').value = localStorage.getItem(sk('lic')) || "";
             document.getElementById('iKnow').value = localStorage.getItem(sk('knowledge')) || "";
             document.getElementById('iExpiry').value = localStorage.getItem(sk('expiry')) || "2028-12-31";
-            
+        }
+
+        function checkAccess() {
+            const lic = localStorage.getItem(sk('lic'));
             const exp = localStorage.getItem(sk('expiry')) || "2028-12-31";
-            document.getElementById('hLic').innerText = new Date().toISOString().split('T')[0] > exp ? "● Expired" : `● Licensed (${exp})`;
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Security check: Must have an active license key and not be expired
+            if (!lic || lic.length < 5 || today > exp) {
+                document.getElementById('hLic').innerText = "✖ License Unauthorized / Expired";
+                document.getElementById('hLic').className = "text-[9px] text-red-500 font-mono";
+                toggleModal();
+            } else {
+                document.getElementById('hLic').innerText = `● Licensed & Secured (${exp})`;
+                document.getElementById('hLic').className = "text-[9px] text-emerald-400 font-mono";
+            }
         }
 
         function toggleModal() { document.getElementById('modal').classList.toggle('hidden'); }
         
         function saveVault() {
+            const lic = document.getElementById('iLicKey').value.trim();
+            if(!lic) { alert("Enterprise License Key is required to authorize access!"); return; }
+
             localStorage.setItem(sk('client'), document.getElementById('iClient').value.trim());
             localStorage.setItem(sk('key'), document.getElementById('iKey').value.trim());
-            localStorage.setItem(sk('logo'), document.getElementById('iLogo').value.trim());
+            localStorage.setItem(sk('lic'), lic);
             localStorage.setItem(sk('knowledge'), document.getElementById('iKnow').value.trim());
             localStorage.setItem(sk('expiry'), document.getElementById('iExpiry').value);
-            loadVault(); toggleModal(); render(); alert("Saved!");
+            
+            loadVault(); checkAccess(); toggleModal(); render(); alert("Enterprise Vault Authorized Successfully!");
         }
 
         function copyLink() {
             navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?client=${document.getElementById('iClient').value.replace(/\s+/g,'')}`);
-            alert("Copied isolated client link!");
+            alert("Copied isolated client URL!");
         }
 
         function handleFile(e) {
@@ -146,6 +178,19 @@
 
         function render() {
             const box = document.getElementById('workspace');
+            const lic = localStorage.getItem(sk('lic'));
+            
+            if (!lic) {
+                box.innerHTML = `
+                    <div class="text-center space-y-4 max-w-md mx-auto p-8 neon-border bg-cardbg rounded-3xl">
+                        <i class="fa-solid fa-lock text-red-500 text-4xl animate-bounce"></i>
+                        <h2 class="text-xl font-bold text-white">Enterprise License Required</h2>
+                        <p class="text-xs text-gray-400">This workspace requires a valid client activation license key. Please click 'Tenant Setup' on the top right to authorize your instance.</p>
+                        <button onclick="toggleModal()" class="neon-btn text-white text-xs font-bold px-5 py-2.5 rounded-xl">Enter License Key</button>
+                    </div>`;
+                return;
+            }
+
             if (view === 'grid') {
                 box.innerHTML = `
                     <div class="mb-5 text-center"><h2 class="text-xl font-black uppercase text-white">10 Enterprise AI Engines</h2><p class="text-xs text-gray-400 font-mono">Tenant: ${localStorage.getItem(sk('client'))||'Apex'}</p></div>
@@ -198,14 +243,9 @@
 
     <!-- Security & Anti-Inspection Layer -->
     <script>
-        document.addEventListener('contextmenu', function(event) {
-            event.preventDefault();
-        });
-        
+        document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = function(e) {
-            if (e.keyCode == 123) { return false; }
-            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) { return false; }
-            if (e.ctrlKey && e.keyCode == 85) { return false; }
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) { return false; }
         };
     </script>
 </body>
