@@ -27,7 +27,6 @@
             <p id="hSub" class="text-[9px] text-emerald-400 font-mono">● Secure System</p>
         </div>
         <div class="flex items-center space-x-2">
-            <!-- Direct Download App Button -->
             <button onclick="triggerInstall()" id="downloadAppBtn" class="hidden text-xs bg-emerald-950 text-emerald-300 px-3 py-2 rounded-xl border border-emerald-800 font-bold shadow-lg animate-pulse">
                 <i class="fa-solid fa-cloud-arrow-down mr-1.5"></i> Download App
             </button>
@@ -72,7 +71,6 @@
             checkCurrentMode();
         });
 
-        // Capture direct install prompt
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -88,7 +86,7 @@
                 }
                 deferredPrompt = null;
             } else {
-                alert("ℹ️ Sentis OS is already installed as a native app, or your browser is running in standalone mode!");
+                alert("ℹ️ Sentis OS is ready for installation!");
             }
         }
 
@@ -266,7 +264,7 @@
             let key = localStorage.getItem(`sentis_${activeClient}_key`) || prompt("Enter your company Gemini API Key:");
             if(key && !localStorage.getItem(`sentis_${activeClient}_key`)) localStorage.setItem(`sentis_${activeClient}_key`, key);
             
-            const txt = document.getElementById('prompt'].value.trim(), out = document.getElementById('out'), load = document.getElementById('load');
+            const txt = document.getElementById('prompt').value.trim(), out = document.getElementById('out'), load = document.getElementById('load');
             if(!key){ alert("API key required!"); return; }
             if(!txt && !fileObj){ out.innerHTML = "⚠️ Provide input."; return; }
 
