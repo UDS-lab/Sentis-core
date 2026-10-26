@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SENTIS OS | Enterprise Suite</title>
-    <!-- PWA Manifest for Native App Installation & Full-Screen Standalone Mode -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNFTlRJUyBPUyBFbnRlcnByaXNlIiwKICAic2hvcnRfbmFtZSI6ICJTRU5USVMiLAogICJzdGFydF91cmwiOiAifCIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzA4MDgwYSIsCiAgInRoZW1lX2NvbG9yIjogIiNkYzI2MjYiCn0=">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNFTlRJUyBPUyBFbnRlcnByaXNlIiwKICAic2hvcnRfbmFtZSI6ICJTRU5USVMiLAogICJzdGFydF91cmwiOiAiaW5kZXguaHRtbCIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzA4MDgwYSIsCiAgInRoZW1lX2NvbG9yIjogIiNkYzI2MjYiCn0=">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -28,7 +27,10 @@
             <p id="hSub" class="text-[9px] text-emerald-400 font-mono">● Secure System</p>
         </div>
         <div class="flex items-center space-x-2">
-            <button onclick="installApp()" id="installBtn" class="hidden text-xs bg-emerald-950 text-emerald-300 px-3 py-2 rounded-xl border border-emerald-800"><i class="fa-solid fa-download mr-1"></i> Install App</button>
+            <!-- Direct Download App Button -->
+            <button onclick="triggerInstall()" id="downloadAppBtn" class="hidden text-xs bg-emerald-950 text-emerald-300 px-3 py-2 rounded-xl border border-emerald-800 font-bold shadow-lg animate-pulse">
+                <i class="fa-solid fa-cloud-arrow-down mr-1.5"></i> Download App
+            </button>
             <button onclick="openSetupModal()" class="text-xs bg-red-950/40 text-red-200 px-3 py-2 rounded-xl border border-red-800"><i class="fa-solid fa-key text-red-500 mr-1"></i> Enter Key</button>
         </div>
     </header>
@@ -70,19 +72,23 @@
             checkCurrentMode();
         });
 
-        // PWA Install Prompt Capture
+        // Capture direct install prompt
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('installBtn').classList.remove('hidden');
+            document.getElementById('downloadAppBtn').classList.remove('hidden');
         });
 
-        async function installApp() {
+        async function triggerInstall() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') { document.getElementById('installBtn').classList.add('hidden'); }
+                if (outcome === 'accepted') {
+                    document.getElementById('downloadAppBtn').classList.add('hidden');
+                }
                 deferredPrompt = null;
+            } else {
+                alert("ℹ️ Sentis OS is already installed as a native app, or your browser is running in standalone mode!");
             }
         }
 
@@ -260,7 +266,7 @@
             let key = localStorage.getItem(`sentis_${activeClient}_key`) || prompt("Enter your company Gemini API Key:");
             if(key && !localStorage.getItem(`sentis_${activeClient}_key`)) localStorage.setItem(`sentis_${activeClient}_key`, key);
             
-            const txt = document.getElementById('prompt').value.trim(), out = document.getElementById('out'), load = document.getElementById('load');
+            const txt = document.getElementById('prompt'].value.trim(), out = document.getElementById('out'), load = document.getElementById('load');
             if(!key){ alert("API key required!"); return; }
             if(!txt && !fileObj){ out.innerHTML = "⚠️ Provide input."; return; }
 
