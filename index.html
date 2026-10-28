@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SENTIS OS | Enterprise Suite</title>
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNFTlRJUyBPUyBFbnRlcnByaXNlIiwKICAic2hvcnRfbmFtZSI6ICJTRU5USVMiLAogICJzdGFydF91cmwiOiAiaW5kZXguaHRtbCIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzA4MDgwYSIsCiAgInRoZW1lX2NvbG9yIjogIiNkYzI2MjYiCn0=">
+    <!-- Linked to physical manifest.json -->
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,7 +28,8 @@
             <p id="hSub" class="text-[9px] text-emerald-400 font-mono">● Secure System</p>
         </div>
         <div class="flex items-center space-x-2">
-            <button onclick="triggerInstall()" id="downloadAppBtn" class="hidden text-xs bg-emerald-950 text-emerald-300 px-3 py-2 rounded-xl border border-emerald-800 font-bold shadow-lg animate-pulse">
+            <!-- Direct Download App Button -->
+            <button onclick="triggerInstall()" id="downloadAppBtn" class="text-xs bg-emerald-950 text-emerald-300 px-3 py-2 rounded-xl border border-emerald-800 font-bold shadow-lg animate-pulse">
                 <i class="fa-solid fa-cloud-arrow-down mr-1.5"></i> Download App
             </button>
             <button onclick="openSetupModal()" class="text-xs bg-red-950/40 text-red-200 px-3 py-2 rounded-xl border border-red-800"><i class="fa-solid fa-key text-red-500 mr-1"></i> Enter Key</button>
@@ -74,19 +76,16 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('downloadAppBtn').classList.remove('hidden');
         });
 
         async function triggerInstall() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    document.getElementById('downloadAppBtn').classList.add('hidden');
-                }
                 deferredPrompt = null;
             } else {
-                alert("ℹ️ Sentis OS is ready for installation!");
+                // Fallback direct instructions if browser prompt is restricted
+                alert("💡 To install Sentis OS:\n\n1. Tap your browser menu (3 dots at the top right).\n2. Tap 'Install app' or 'Add to Home screen'.\n\nIt will install instantly as a native app!");
             }
         }
 
