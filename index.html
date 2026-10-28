@@ -233,7 +233,7 @@
                         <button onclick="view='grid';fileObj=null;renderClientGrid();" class="bg-red-950/40 text-red-300 text-xs px-3 py-1.5 rounded-xl border border-red-800"><i class="fa-solid fa-chevron-left mr-1"></i> Back</button>
                         <div class="neon-border bg-cardbg p-4 rounded-2xl space-y-3">
                             <h2 class="text-md font-bold text-white"><i class="fa-solid ${m.icon} text-red-500 mr-2"></i>${m.title}</h2>
-                            <textarea id="prompt" rows="3" class="w-full bg-black border border-red-900/40 rounded-xl p-3 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none" placeholder="Enter prompt or instructions..."></textarea>
+                            <textarea id="prompt" rows="5" class="w-full bg-black border border-red-900/40 rounded-xl p-3 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none" placeholder="Enter prompt or instructions..."></textarea>
                             <div class="flex justify-between items-center">
                                 <label class="cursor-pointer bg-red-950/40 border border-red-800 text-red-300 text-xs px-3 py-2 rounded-xl"><i class="fa-solid fa-paperclip text-red-500 mr-1"><span>Attach File</span></i><input type="file" onchange="handleFile(event)" class="hidden"></label>
                                 <span id="fStatus" class="text-xs text-gray-400 font-mono"></span>
@@ -257,23 +257,44 @@
 
         async function runAI() {
             let activeClient = localStorage.getItem('sentis_active_client');
-            let key = localStorage.getItem(`sentis_${activeClient}_key`) || prompt("Enter your company Gemini API Key:");
-            if(key && !localStorage.getItem(`sentis_${activeClient}_key`)) localStorage.setItem(`sentis_${activeClient}_key`, key);
+            let key = localStorage.getItem(`sentis_${activeClient}_key`);
+            if(!key) {
+                key = prompt("Enter your company Gemini API Key:");
+                if(key) localStorage.setItem(`sentis_${activeClient}_key`, key);
+            }
             
             const txt = document.getElementById('prompt').value.trim(), out = document.getElementById('out'), load = document.getElementById('load');
             if(!key){ alert("API key required!"); return; }
             if(!txt && !fileObj){ out.innerHTML = "⚠️ Provide input."; return; }
 
             load.classList.remove('hidden'); out.innerHTML = "⚡ Processing...";
-            const parts = [{ text: `Tenant: ${activeClient}. Engine: ${mods[view].desc}. Input: ${txt}` }];
+            const parts = [{ text: `Task: ${mods[view].desc}\n\nInput Data / Email Thread:\n${txt}` }];
             if(fileObj) parts.push({ inline_data: { mime_type: fileObj.mimeType, data: fileObj.data } });
+            
             try {
-                // Fixed model to gemini-1.5-flash
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts }] }) });
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, { 
+                    method: "POST", 
+                    headers: { "Content-Type": "application/json" }, 
+                    body: JSON.stringify({ contents: [{ parts }] }) 
+                });
                 const d = await res.json();
-                out.innerHTML = marked.parse(d?.candidates?.[0]?.content?.parts?.[0]?.text || "No output.");
-            } catch(e) { out.innerHTML = "❌ Error: " + e.message; }
-            finally { load.classList.add('hidden'); }
+                
+                // Expose explicit error if API returns failure
+                if (d.error) {
+                    out.innerHTML = `<span class="text-red-400">❌ API Error (${d.error.code}): ${d.error.message}</span>`;
+                } else {
+                    const text = d?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        out.innerHTML = marked.parse(text);
+                    } else {
+                        out.innerHTML = `⚠️ No text generated. Raw response: <pre class="text-[10px] text-gray-500 mt-2">${JSON.stringify(d, null, 2)}</pre>`;
+                    }
+                }
+            } catch(e) { 
+                out.innerHTML = "❌ Network Error: " + e.message; 
+            } finally { 
+                load.classList.add('hidden'); 
+            }
         }
     </script>
 </body>
