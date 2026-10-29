@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Load Hugging Face Transformers.js for Browser-Native Inference -->
+    <!-- Load Hugging Face Transformers.js -->
     <script type="module">
         import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
         window.tfPipeline = pipeline;
@@ -274,27 +274,29 @@
             if (!txt) { out.innerHTML = "⚠️ Please provide text input."; return; }
 
             load.classList.remove('hidden');
-            out.innerHTML = `<div class="space-y-2 font-mono text-[11px] text-emerald-400"><p class="animate-pulse">⚡ Initializing Sovereign AI Engine (Downloading lightweight weights into browser cache if first run)...</p></div>`;
+            out.innerHTML = `<div class="space-y-2 font-mono text-[11px] text-emerald-400"><p class="animate-pulse">⚡ Initializing Sovereign AI Engine (Downloading lightweight model weights into browser cache on first run)...</p></div>`;
 
             try {
                 if (!generator) {
                     if (!window.tfPipeline) {
                         throw new Error("Inference engine loading... Please wait 5 seconds and click Synthesize again.");
                     }
-                    // Load ultra-optimized, high-speed open-source text-generation model
-                    generator = await window.tfPipeline('text-generation', 'Xenova/LaMini-Flan-T5-77M');
+                    // Using a fully compatible text-generation model architecture
+                    generator = await window.tfPipeline('text-generation', 'Xenova/Qwen1.5-0.5B-Chat');
                 }
 
                 out.innerHTML = `<span class="text-emerald-400 font-mono text-[11px] animate-pulse">🧠 Thinking locally inside browser...</span>`;
 
-                const formattedPrompt = `Task: ${mods[view].desc}\n\nInput Data:\n${txt}\n\nResponse:`;
-                const result = await generator(formattedPrompt, { max_new_tokens: 250, temperature: 0.7 });
+                const promptText = `Task: ${mods[view].desc}\nInput: ${txt}\nSummary & Action Plan:`;
+                const result = await generator(promptText, { max_new_tokens: 150, temperature: 0.7, do_sample: true });
 
-                if (result && result[0] && result[0].generated_text) {
-                    out.innerHTML = marked.parse(result[0].generated_text);
-                } else {
-                    out.innerHTML = "⚠️ Synthesis complete, but returned empty string.";
+                let generated = result[0].generated_text;
+                // Clean up prompt echo if present
+                if (generated.startsWith(promptText)) {
+                    generated = generated.slice(promptText.length);
                 }
+
+                out.innerHTML = marked.parse(generated || "Synthesis completed.");
             } catch (e) {
                 out.innerHTML = `<span class="text-red-400 font-mono">❌ Execution Error: ${e.message}</span>`;
             } finally {
@@ -304,4 +306,3 @@
     </script>
 </body>
 </html>
-
