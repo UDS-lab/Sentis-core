@@ -3,304 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SENTIS OS | Sovereign Enterprise AI</title>
-    <link rel="manifest" href="manifest.json">
+    <title>SENTIS OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Load Hugging Face Transformers.js -->
-    <script type="module">
-        import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
-        window.tfPipeline = pipeline;
-        env.allowLocalModels = false;
-        env.useBrowserCache = true;
-    </script>
-    <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#08080a', cardbg: 'rgba(18, 18, 24, 0.9)' } } } }
-    </script>
-    <style>
-        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #3a0a10; border-radius: 8px; }
-        .neon-border { border: 1px solid rgba(255, 42, 95, 0.35); box-shadow: 0 0 15px rgba(255, 42, 95, 0.15); transition: 0.2s; }
-        .neon-border:hover { border-color: rgba(255, 42, 95, 0.85); transform: translateY(-2px); }
-        .neon-btn { background: linear-gradient(135deg, #dc2626, #991b1b); box-shadow: 0 0 15px rgba(220, 38, 38, 0.4); }
-    </style>
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#08080a', cardbg: '#121218' } } } }</script>
 </head>
-<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
+<body class="bg-darkbg text-gray-100 font-sans min-h-screen p-6 flex flex-col items-center">
 
-    <header class="border-b border-red-900/30 bg-darkbg/95 px-6 py-3.5 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center space-x-3">
-            <div class="w-3 h-3 bg-red-600 rounded-full animate-ping"></div>
-            <span class="text-xl font-black tracking-widest text-white font-mono cursor-pointer" ondblclick="triggerMasterAccess()">SENTIS<span class="text-red-500 text-xs ml-2 bg-red-950 px-2 py-0.5 rounded border border-red-800">SOVEREIGN</span></span>
-        </div>
-        <div class="text-center">
-            <h1 id="hTitle" class="text-md font-bold text-red-500 font-mono">Enterprise Hub</h1>
-            <p id="hSub" class="text-[9px] text-emerald-400 font-mono">● Browser-Native AI Node</p>
-        </div>
-        <div class="flex items-center space-x-2">
-            <button onclick="triggerInstall()" id="downloadAppBtn" class="text-xs bg-emerald-950 text-emerald-300 px-3 py-2 rounded-xl border border-emerald-800 font-bold shadow-lg animate-pulse">
-                <i class="fa-solid fa-cloud-arrow-down mr-1.5"></i> Download App
+    <div class="max-w-3xl w-full space-y-6">
+        <header class="flex justify-between items-center border-b border-red-900/40 pb-4">
+            <h1 class="text-lg font-black tracking-widest text-red-500 font-mono">SENTIS OS</h1>
+            <button onclick="setKey()" class="text-xs bg-red-950 text-red-300 px-3 py-1.5 rounded-lg border border-red-800">
+                <i class="fa-solid fa-key mr-1"></i> Set API Key
             </button>
-            <button onclick="openSetupModal()" class="text-xs bg-red-950/40 text-red-200 px-3 py-2 rounded-xl border border-red-800"><i class="fa-solid fa-key text-red-500 mr-1"></i> License Access</button>
+        </header>
+
+        <div class="bg-cardbg border border-red-900/30 p-5 rounded-2xl space-y-4 shadow-xl">
+            <textarea id="prompt" rows="4" class="w-full bg-black border border-red-900/40 rounded-xl p-3 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none" placeholder="Enter prompt here..."></textarea>
+            <button onclick="runAI()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg">
+                <i class="fa-solid fa-bolt"></i><span>Synthesize (Sub-Second)</span>
+            </button>
         </div>
-    </header>
 
-    <main class="flex-1 p-4 md:p-8 flex flex-col max-w-7xl w-full mx-auto">
-        <div id="workspace" class="flex-1 flex flex-col justify-center"></div>
-    </main>
-
-    <!-- License / Master Key Modal -->
-    <div id="setupModal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-darkbg max-w-md w-full p-6 rounded-3xl border border-red-800 space-y-4 shadow-2xl text-center">
-            <i class="fa-solid fa-shield-halved text-red-500 text-3xl animate-pulse"></i>
-            <h3 class="text-md font-bold text-white">Enter Enterprise License Key</h3>
-            <p class="text-xs text-gray-400">Authenticate with your client license key or founder master key.</p>
-            <input type="password" id="keyInput" placeholder="Enter key..." class="w-full bg-black border border-red-900/40 text-xs p-3 rounded-xl text-white text-center font-mono focus:outline-none focus:border-red-500">
-            <button onclick="submitKey()" class="neon-btn text-white text-xs font-bold w-full py-3 rounded-xl">Authenticate</button>
-            <button onclick="closeSetupModal()" class="text-xs text-gray-500 hover:text-gray-300 mt-2 block mx-auto">Cancel</button>
+        <div class="bg-cardbg border border-red-900/30 p-5 rounded-2xl min-h-[150px]">
+            <div id="out" class="text-xs text-gray-300 leading-relaxed">Awaiting input...</div>
         </div>
     </div>
 
     <script>
-        const mods = {
-            inbox: { title: "Inbox Command", icon: "fa-inbox", desc: "Summarizes client email threads & generates executive responses." },
-            qualify: { title: "Lead Qualify Engine", icon: "fa-filter", desc: "Scores prospect intent, budget tier, and closing strategy." },
-            proposal: { title: "Deal Proposal Generator", icon: "fa-file-contract", desc: "Turns raw meeting notes into structured enterprise proposals." },
-            sync: { title: "SOP Knowledge Co-Pilot", icon: "fa-brain", desc: "Instant guidance on standard operating procedures." },
-            call: { title: "Call Intelligence Hub", icon: "fa-microphone-lines", desc: "Extracts key decisions, objections, and action items." },
-            adcopy: { title: "Ad Copy Matrix", icon: "fa-rectangle-ad", desc: "Generates targeted enterprise ad copy for marketing campaigns." },
-            competitor: { title: "Competitor Radar", icon: "fa-radar", desc: "Analyzes competitor tactics and market positioning." },
-            script: { title: "Sales Script Builder", icon: "fa-scroll", desc: "Generates objection handling scripts for high-ticket sales." },
-            churn: { title: "Client Churn Shield", icon: "fa-shield-halved", desc: "Monitors sentiment and crafts churn prevention strategies." },
-            onboarding: { title: "Onboarding Architect", icon: "fa-diagram-project", desc: "Builds automated client kickoff roadmaps and docs." }
-        };
-
-        let view = 'grid', generator = null, deferredPrompt = null;
-        const MASTER_ADMIN_KEY = "UDS-MASTER-2026";
-
-        window.addEventListener('DOMContentLoaded', () => {
-            checkCurrentMode();
-        });
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
-
-        async function triggerInstall() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-            } else {
-                alert("💡 Installation Guide:\n\n1. Open browser menu (3 dots at top right).\n2. Tap 'Install app' or 'Add to Home screen'.\n\nRuns as a native full-screen PWA!");
+        function setKey() {
+            let key = prompt("Enter your Groq API Key (gsk_...):", localStorage.getItem('groq_key') || '');
+            if (key) {
+                localStorage.setItem('groq_key', key.trim());
+                alert("API Key saved locally!");
             }
         }
 
-        function checkCurrentMode() {
-            let mode = localStorage.getItem('sentis_current_mode') || 'client';
-            if (mode === 'admin') {
-                renderAdminDashboard();
-            } else {
-                let activeClient = localStorage.getItem('sentis_active_client');
-                if (!activeClient) {
-                    document.getElementById('setupModal').classList.remove('hidden');
-                } else {
-                    document.getElementById('hTitle').innerText = activeClient;
-                    document.getElementById('hSub').innerText = "● Sovereign Local AI Active";
-                    renderClientGrid();
-                }
-            }
-        }
-
-        function openSetupModal() { document.getElementById('setupModal').classList.remove('hidden'); }
-        function closeSetupModal() { document.getElementById('setupModal').classList.add('hidden'); }
-        function triggerMasterAccess() { openSetupModal(); }
-
-        function submitKey() {
-            let val = document.getElementById('keyInput').value.trim();
-            if (val === MASTER_ADMIN_KEY) {
-                localStorage.setItem('sentis_current_mode', 'admin');
-                closeSetupModal();
-                alert("👑 Master Admin Access Granted!");
-                renderAdminDashboard();
+        async function runAI() {
+            let key = localStorage.getItem('groq_key');
+            if (!key) {
+                setKey();
                 return;
             }
 
-            let registry = JSON.parse(localStorage.getItem('sentis_master_registry') || '[]');
-            let found = registry.find(r => r.key === val);
-            if (found) {
-                localStorage.setItem('sentis_current_mode', 'client');
-                localStorage.setItem('sentis_active_client', found.client);
-                localStorage.setItem('sentis_active_key', val);
-                closeSetupModal();
-                alert(`🚀 Welcome ${found.client}! Workspace Unlocked.`);
-                location.reload();
-            } else {
-                alert("❌ Invalid License Key.");
-            }
-        }
+            let txt = document.getElementById('prompt').value.trim();
+            let out = document.getElementById('out');
+            if (!txt) return;
 
-        // --- MASTER ADMIN DASHBOARD ---
-        function renderAdminDashboard() {
-            document.getElementById('hTitle').innerText = "UDS Master Control";
-            document.getElementById('hSub').innerText = "● Founder Admin Mode";
-            let registry = JSON.parse(localStorage.getItem('sentis_master_registry') || '[]');
-            const box = document.getElementById('workspace');
-
-            box.innerHTML = `
-                <div class="space-y-6">
-                    <div class="flex justify-between items-center bg-red-950/20 p-4 rounded-2xl border border-red-900/40">
-                        <span class="text-xs text-red-400 font-mono">Master Admin Mode Active.</span>
-                        <button onclick="exitAdmin()" class="text-xs bg-red-950 text-red-300 px-3 py-1.5 rounded-xl border border-red-800">Switch to Client View</button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="neon-border bg-cardbg p-5 rounded-2xl">
-                            <h4 class="text-xs text-gray-400 font-mono">TOTAL CLIENTS</h4>
-                            <p class="text-2xl font-bold text-white mt-1">${registry.length}</p>
-                        </div>
-                        <div class="neon-border bg-cardbg p-5 rounded-2xl">
-                            <h4 class="text-xs text-gray-400 font-mono">REVENUE POTENTIAL</h4>
-                            <p class="text-2xl font-bold text-emerald-400 mt-1">$${registry.length * 5000}/mo</p>
-                        </div>
-                        <div class="neon-border bg-cardbg p-5 rounded-2xl flex items-center justify-between">
-                            <div><h4 class="text-xs text-gray-400 font-mono">ACTION</h4><p class="text-sm font-bold text-red-400 mt-1">Generate Key</p></div>
-                            <button onclick="generateKey()" class="neon-btn text-white px-4 py-2 rounded-xl text-xs font-bold"><i class="fa-solid fa-plus"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="neon-border bg-cardbg p-6 rounded-3xl space-y-4">
-                        <h3 class="text-md font-bold text-white"><i class="fa-solid fa-list-check text-red-500 mr-2"></i>Master Directory</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs font-mono">
-                                <thead class="border-b border-red-900/40 text-gray-400">
-                                    <tr><th class="pb-3">Company</th><th class="pb-3">License Key</th><th class="pb-3">Expiry</th><th class="pb-3">Actions</th></tr>
-                                </thead>
-                                <tbody class="divide-y divide-red-950/40">
-                                    ${registry.length === 0 ? '<tr><td colspan="4" class="py-4 text-center text-gray-500">No client licenses generated. Click + to create one.</td></tr>' : registry.map(r => `
-                                        <tr class="hover:bg-red-950/20">
-                                            <td class="py-3 font-bold text-white">${r.client}</td>
-                                            <td class="py-3 text-gray-300 font-mono">${r.key}</td>
-                                            <td class="py-3 text-gray-400">${r.expiry}</td>
-                                            <td class="py-3"><button onclick="revoke('${r.key}')" class="text-red-500 hover:text-red-300"><i class="fa-solid fa-trash"></i> Revoke</button></td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function exitAdmin() {
-            localStorage.setItem('sentis_current_mode', 'client');
-            location.reload();
-        }
-
-        function generateKey() {
-            let name = prompt("Enter Client Company Name:");
-            if (!name) return;
-            let clean = name.replace(/\s+/g, '');
-            let key = 'SENTIS-' + clean.toUpperCase() + '-' + Math.floor(1000 + Math.random() * 9000);
-            let expiry = prompt("Enter Expiry Date:", "2028-12-31");
-
-            let registry = JSON.parse(localStorage.getItem('sentis_master_registry') || '[]');
-            registry.push({ client: clean, key: key, expiry: expiry });
-            localStorage.setItem('sentis_master_registry', JSON.stringify(registry));
-
-            alert(`✅ Key Generated for ${clean}:\n${key}`);
-            renderAdminDashboard();
-        }
-
-        function revoke(key) {
-            if (confirm("Revoke this license?")) {
-                let registry = JSON.parse(localStorage.getItem('sentis_master_registry') || '[]');
-                registry = registry.filter(r => r.key !== key);
-                localStorage.setItem('sentis_master_registry', JSON.stringify(registry));
-                renderAdminDashboard();
-            }
-        }
-
-        // --- CLIENT PORTAL ---
-        function renderClientGrid() {
-            const box = document.getElementById('workspace');
-            if (view === 'grid') {
-                box.innerHTML = `
-                    <div class="mb-5 text-center">
-                        <h2 class="text-xl font-black uppercase text-white tracking-wider">10 Enterprise AI Engines</h2>
-                        <p class="text-xs text-gray-400 font-mono mt-1">Tenant: ${localStorage.getItem('sentis_active_client')} | Serverless Browser Engine</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto w-full">
-                        ${Object.keys(mods).map(k => `
-                            <div onclick="view='${k}';renderClientGrid();" class="neon-border bg-cardbg p-4 rounded-2xl cursor-pointer flex flex-col justify-between space-y-3">
-                                <div class="flex justify-between items-center"><div class="w-8 h-8 bg-red-950 border border-red-800 rounded-lg flex items-center justify-center text-red-500"><i class="fa-solid ${mods[k].icon}"></i></div><span class="text-[9px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/60">SOVEREIGN</span></div>
-                                <div><h3 class="text-md font-bold text-white">${mods[k].title}</h3><p class="text-[11px] text-gray-400 mt-0.5">${mods[k].desc}</p></div>
-                                <div class="text-[11px] font-semibold text-red-400 flex items-center">Launch Engine <i class="fa-solid fa-arrow-right ml-1"></i></div>
-                            </div>
-                        `).join('')}
-                    </div>`;
-            } else {
-                const m = mods[view];
-                box.innerHTML = `
-                    <div class="space-y-4 max-w-4xl mx-auto w-full">
-                        <button onclick="view='grid';renderClientGrid();" class="bg-red-950/40 text-red-300 text-xs px-3 py-1.5 rounded-xl border border-red-800"><i class="fa-solid fa-chevron-left mr-1"></i> Dashboard</button>
-                        <div class="neon-border bg-cardbg p-4 rounded-2xl space-y-3">
-                            <h2 class="text-md font-bold text-white"><i class="fa-solid ${m.icon} text-red-500 mr-2"></i>${m.title}</h2>
-                            <textarea id="prompt" rows="5" class="w-full bg-black border border-red-900/40 rounded-xl p-3 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none" placeholder="Paste text or enter instructions here..."></textarea>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] text-gray-500 font-mono"><i class="fa-solid fa-shield-cat text-emerald-400 mr-1"></i> Local Browser Inference</span>
-                                <button onclick="runLocalAI()" class="neon-btn text-white font-bold px-5 py-2 rounded-xl text-xs flex items-center">
-                                    <i class="fa-solid fa-bolt mr-1.5"></i> Synthesize
-                                </button>
-                            </div>
-                        </div>
-                        <div class="neon-border bg-cardbg p-4 rounded-2xl space-y-2 min-h-[180px]">
-                            <div class="flex justify-between border-b border-red-900/30 pb-2">
-                                <span class="text-xs font-bold text-red-400 font-mono">Output</span>
-                                <span id="load" class="text-xs text-emerald-400 font-mono hidden animate-pulse">Running In-Browser AI...</span>
-                            </div>
-                            <div id="out" class="text-xs text-gray-300 leading-relaxed">Awaiting execution...</div>
-                        </div>
-                    </div>`;
-            }
-        }
-
-        // --- BROWSER-NATIVE INFERENCE PIPELINE ---
-        async function runLocalAI() {
-            const txt = document.getElementById('prompt').value.trim();
-            const out = document.getElementById('out');
-            const load = document.getElementById('load');
-
-            if (!txt) { out.innerHTML = "⚠️ Please provide text input."; return; }
-
-            load.classList.remove('hidden');
-            out.innerHTML = `<div class="space-y-2 font-mono text-[11px] text-emerald-400"><p class="animate-pulse">⚡ Initializing Sovereign AI Engine (Downloading lightweight model weights into browser cache on first run)...</p></div>`;
+            out.innerHTML = `<span class="text-yellow-400 font-mono animate-pulse">⚡ Processing...</span>`;
 
             try {
-                if (!generator) {
-                    if (!window.tfPipeline) {
-                        throw new Error("Inference engine loading... Please wait 5 seconds and click Synthesize again.");
-                    }
-                    // Using a fully compatible text-generation model architecture
-                    generator = await window.tfPipeline('text-generation', 'Xenova/Qwen1.5-0.5B-Chat');
+                let res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${key}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: txt }],
+                        temperature: 0.6,
+                        max_tokens: 1024
+                    })
+                });
+
+                let data = await res.json();
+                if (data.choices && data.choices[0]) {
+                    out.innerHTML = marked.parse(data.choices[0].message.content);
+                } else {
+                    out.innerHTML = `<span class="text-red-400">Error: ${data.error?.message || 'Unknown error'}</span>`;
                 }
-
-                out.innerHTML = `<span class="text-emerald-400 font-mono text-[11px] animate-pulse">🧠 Thinking locally inside browser...</span>`;
-
-                const promptText = `Task: ${mods[view].desc}\nInput: ${txt}\nSummary & Action Plan:`;
-                const result = await generator(promptText, { max_new_tokens: 150, temperature: 0.7, do_sample: true });
-
-                let generated = result[0].generated_text;
-                // Clean up prompt echo if present
-                if (generated.startsWith(promptText)) {
-                    generated = generated.slice(promptText.length);
-                }
-
-                out.innerHTML = marked.parse(generated || "Synthesis completed.");
             } catch (e) {
-                out.innerHTML = `<span class="text-red-400 font-mono">❌ Execution Error: ${e.message}</span>`;
-            } finally {
-                load.classList.add('hidden');
+                out.innerHTML = `<span class="text-red-400">Network Error: ${e.message}</span>`;
             }
         }
     </script>
