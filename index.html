@@ -44,6 +44,15 @@
         #out ol { list-style-type: decimal; }
         #out strong { color: #ffffff; }
         #out code { background: #1f1f27; padding: 2px 4px; border-radius: 3px; font-family: monospace; color: #fca5a5; font-size: 11px; }
+        #out table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 11px; }
+        #out th, #out td { border: 1px solid #3f1d1d; padding: 5px 7px; text-align: left; }
+        #out th { background: #260d0d; color: #fca5a5; }
+        @media print {
+            body * { visibility: hidden; }
+            #printableArea, #printableArea * { visibility: visible; }
+            #printableArea { position: absolute; left: 0; top: 0; width: 100%; color: #000 !important; background: #fff !important; padding: 20px; }
+            #printableArea * { color: #000 !important; }
+        }
     </style>
 </head>
 <body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
@@ -53,19 +62,19 @@
         <div class="flex items-center space-x-2 cursor-pointer" onclick="renderGrid()">
             <div class="w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
             <span class="text-sm font-black tracking-widest text-white font-mono">
-                SENTIS<span class="text-red-400 text-[9px] ml-1.5 bg-red-950 px-1.5 py-0.5 rounded border border-red-800">DEEPSEEK OS</span>
+                SENTIS<span class="text-red-400 text-[9px] ml-1.5 bg-red-950 px-1.5 py-0.5 rounded border border-red-800">GEMINI CORE</span>
             </span>
         </div>
 
         <div class="hidden sm:block text-center">
-            <h1 id="hTitle" class="text-[11px] font-bold text-red-400 font-mono uppercase tracking-wider">DeepSeek-R1 LPU Core</h1>
-            <p id="hSub" class="text-[9px] text-emerald-400 font-mono">● Reasoning Engine Ready</p>
+            <h1 id="hTitle" class="text-[11px] font-bold text-red-400 font-mono uppercase tracking-wider">Enterprise Neural Core</h1>
+            <p id="hSub" class="text-[9px] text-emerald-400 font-mono">● Gemini 2.5 Flash Engine Ready</p>
         </div>
 
         <div class="flex items-center space-x-2">
             <span id="keyStatusBadge" class="hidden md:inline-block text-[9px] font-mono px-2 py-0.5 rounded border"></span>
             <button onclick="openSetupModal()" class="text-[11px] bg-red-950/50 text-red-200 px-2.5 py-1.5 rounded-lg border border-red-800 flex items-center">
-                <i class="fa-solid fa-sliders text-red-400 mr-1"></i> Config
+                <i class="fa-solid fa-key text-red-400 mr-1"></i> API Key
             </button>
         </div>
     </header>
@@ -80,22 +89,22 @@
         <div class="bg-cardbg max-w-sm w-full p-5 rounded-2xl border border-red-800/75 space-y-3 shadow-2xl">
             <div class="text-center space-y-1">
                 <div class="w-8 h-8 bg-red-950 border border-red-800 rounded-xl flex items-center justify-center mx-auto text-red-500 mb-1">
-                    <i class="fa-solid fa-brain text-sm"></i>
+                    <i class="fa-solid fa-sparkles text-sm"></i>
                 </div>
-                <h3 class="text-sm font-bold text-white">DeepSeek Neural Setup</h3>
-                <p class="text-[10px] text-gray-400">Enter your API Key to activate all 10 engines.</p>
+                <h3 class="text-sm font-bold text-white">Gemini Brain Setup</h3>
+                <p class="text-[10px] text-gray-400">Paste your Google Gemini API Key to power all 10 engines.</p>
             </div>
 
             <div class="space-y-2 text-left">
                 <div>
-                    <label class="text-[9px] font-mono text-gray-400 uppercase ml-1">API Key</label>
-                    <input type="password" id="groqInput" placeholder="gsk_..." class="w-full mt-1 bg-black border border-red-900/50 text-xs p-2.5 rounded-lg text-white font-mono focus:outline-none focus:border-red-500">
-                    <a href="https://console.groq.com/keys" target="_blank" class="text-[9px] text-red-400 hover:underline ml-1 mt-0.5 inline-block">Get free key →</a>
+                    <label class="text-[9px] font-mono text-gray-400 uppercase ml-1">Gemini API Key</label>
+                    <input type="password" id="geminiInput" placeholder="AIzaSy..." class="w-full mt-1 bg-black border border-red-900/50 text-xs p-2.5 rounded-lg text-white font-mono focus:outline-none focus:border-red-500">
+                    <a href="https://aistudio.google.com/apikey" target="_blank" class="text-[9px] text-red-400 hover:underline ml-1 mt-0.5 inline-block">Google AI Studio →</a>
                 </div>
             </div>
 
             <div class="pt-2 space-y-1.5">
-                <button onclick="saveConfig()" class="neon-btn text-white text-xs font-bold w-full py-2.5 rounded-lg">Activate DeepSeek Brain</button>
+                <button onclick="saveConfig()" class="neon-btn text-white text-xs font-bold w-full py-2.5 rounded-lg">Activate Gemini Brain</button>
                 <button onclick="closeSetupModal()" class="text-[11px] text-gray-500 hover:text-gray-300 w-full py-1">Close</button>
             </div>
         </div>
@@ -103,15 +112,15 @@
 
     <script>
         const mods = {
-            inbox: { title: "Inbox Command", icon: "fa-inbox", tag: "COMMS", desc: "Summarizes email threads & drafts replies.", placeholder: "Paste client email thread here...", sys: "You are an Executive Communications Director. Summarize in 3 bullet points and write a sharp executive reply." },
-            qualify: { title: "Lead Qualify", icon: "fa-filter", tag: "REVENUE", desc: "Scores prospect intent & closing strategy.", placeholder: "Paste lead form or notes...", sys: "You are a B2B Revenue Strategist. Output: Score (0-100), Budget Tier, Red Flags, Closing Angle." },
-            proposal: { title: "Deal Proposal", icon: "fa-file-contract", tag: "CLOSING", desc: "Turns raw notes into structured proposals.", placeholder: "Paste discovery call notes...", sys: "You are an Enterprise Deal Architect. Create a structured B2B Proposal: Summary, Scope, Timeline, ROI." },
+            inbox: { title: "Inbox Command", icon: "fa-inbox", tag: "COMMS", desc: "Summarizes email threads & drafts replies.", placeholder: "Paste client email thread here...", sys: "You are an Executive Communications Director. Summarize in 3 bullet points and write a sharp, high-authority executive reply." },
+            qualify: { title: "Lead Qualify", icon: "fa-filter", tag: "REVENUE", desc: "Scores prospect intent & closing strategy.", placeholder: "Paste lead form or notes...", sys: "You are a B2B Revenue Strategist. Output: Qualification Score (0-100), Budget Tier, Red Flags, and Closing Angle." },
+            proposal: { title: "Deal Proposal", icon: "fa-file-contract", tag: "CLOSING", desc: "Turns raw notes into structured proposals.", placeholder: "Paste discovery call notes...", sys: "You are an Enterprise Deal Architect. Create a structured B2B Proposal: Executive Summary, Scope, Timeline, and ROI." },
             sync: { title: "SOP Co-Pilot", icon: "fa-brain", tag: "OPS", desc: "Turns workflows into step-by-step SOPs.", placeholder: "Describe a workflow to standardize...", sys: "You are a COO. Convert into a clear SOP with Objective, Prerequisites, and Numbered Steps." },
-            call: { title: "Call Intelligence", icon: "fa-microphone-lines", tag: "INTEL", desc: "Extracts decisions, objections, action items.", placeholder: "Paste meeting transcript...", sys: "You are an Enterprise Deal Analyst. Extract: Key Decisions, Objections, Action Items, Momentum Rating." },
-            adcopy: { title: "Ad Copy Matrix", icon: "fa-rectangle-ad", tag: "GROWTH", desc: "Generates high-converting B2B ad hooks.", placeholder: "Describe your offer and audience...", sys: "You are a B2B Copywriter. Create 3 ad variations with Headlines, Body, and CTAs." },
+            call: { title: "Call Intelligence", icon: "fa-microphone-lines", tag: "INTEL", desc: "Extracts decisions, objections, action items.", placeholder: "Paste meeting transcript...", sys: "You are an Enterprise Deal Analyst. Extract: Key Decisions, Objections, Action Items, and Momentum Rating." },
+            adcopy: { title: "Ad Copy Matrix", icon: "fa-rectangle-ad", tag: "GROWTH", desc: "Generates high-converting B2B ad hooks.", placeholder: "Describe your offer and audience...", sys: "You are a B2B Copywriter. Create 3 ad variations with Headlines, Body Copy, and CTAs." },
             competitor: { title: "Competitor Radar", icon: "fa-radar", tag: "STRATEGY", desc: "Breaks down competitors & counter-angles.", placeholder: "Paste competitor details...", sys: "You are a Competitive Strategist. Output Positioning, Strengths, Weaknesses, and Counter-Script." },
-            script: { title: "Sales Script", icon: "fa-scroll", tag: "SALES", desc: "Builds cold outreach & objection scripts.", placeholder: "Enter offer or tough objection...", sys: "You are an Elite Closer. Build a closing script and 3 objection rebuttals." },
-            churn: { title: "Churn Shield", icon: "fa-shield-halved", tag: "RETENTION", desc: "Diagnoses risk & 7-day save playbook.", placeholder: "Paste client feedback or tickets...", sys: "You are a VP of Customer Success. Diagnose risk level, root cause, and 7-day recovery plan." },
+            script: { title: "Sales Script", icon: "fa-scroll", tag: "SALES", desc: "Builds cold outreach & objection scripts.", placeholder: "Enter offer or tough objection...", sys: "You are an Elite Closer. Build a closing script and 3 word-for-word objection rebuttals." },
+            churn: { title: "Churn Shield", icon: "fa-shield-halved", tag: "RETENTION", desc: "Diagnoses risk & 7-day save playbook.", placeholder: "Paste client feedback or tickets...", sys: "You are a VP of Customer Success. Diagnose risk level, root cause, and a 7-day recovery plan." },
             onboarding: { title: "Onboarding", icon: "fa-diagram-project", tag: "DELIVERY", desc: "Creates white-glove kickoff roadmap.", placeholder: "Enter client package details...", sys: "You are a Delivery Director. Design a 30-Day Onboarding Roadmap and Welcome Email." }
         };
 
@@ -124,11 +133,11 @@
 
         function updateStatusBadge() {
             const badge = document.getElementById('keyStatusBadge');
-            const hasKey = !!localStorage.getItem('sentis_groq_key');
+            const hasKey = !!localStorage.getItem('sentis_gemini_key');
             badge.classList.remove('hidden');
             if (hasKey) {
                 badge.className = "hidden md:inline-block text-[9px] font-mono px-2 py-0.5 rounded border border-emerald-800 bg-emerald-950/40 text-emerald-400";
-                badge.innerText = "● DEEPSEEK CONNECTED";
+                badge.innerText = "● GEMINI CONNECTED";
             } else {
                 badge.className = "hidden md:inline-block text-[9px] font-mono px-2 py-0.5 rounded border border-amber-800 bg-amber-950/40 text-amber-400 cursor-pointer";
                 badge.innerText = "▲ NO KEY";
@@ -137,7 +146,7 @@
         }
 
         function openSetupModal() {
-            document.getElementById('groqInput').value = localStorage.getItem('sentis_groq_key') || '';
+            document.getElementById('geminiInput').value = localStorage.getItem('sentis_gemini_key') || '';
             document.getElementById('setupModal').classList.remove('hidden');
         }
 
@@ -146,8 +155,8 @@
         }
 
         function saveConfig() {
-            const val = document.getElementById('groqInput').value.trim();
-            if (val) localStorage.setItem('sentis_groq_key', val);
+            const val = document.getElementById('geminiInput').value.trim();
+            if (val) localStorage.setItem('sentis_gemini_key', val);
             closeSetupModal();
             updateStatusBadge();
             if (view === 'grid') renderGrid();
@@ -156,21 +165,21 @@
         function renderGrid() {
             view = 'grid';
             const box = document.getElementById('workspace');
-            const hasKey = !!localStorage.getItem('sentis_groq_key');
+            const hasKey = !!localStorage.getItem('sentis_gemini_key');
 
             box.innerHTML = `
                 ${!hasKey ? `
                 <div onclick="openSetupModal()" class="mb-4 bg-amber-950/30 border border-amber-700/60 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:bg-amber-950/50 w-full">
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xs"></i>
-                        <span class="text-[11px] text-amber-200 font-mono">API Key required. Tap here to connect.</span>
+                        <span class="text-[11px] text-amber-200 font-mono">Gemini API Key required. Tap here to paste your key.</span>
                     </div>
                     <span class="text-[11px] font-bold text-amber-400">Setup →</span>
                 </div>` : ''}
 
                 <div class="mb-4 text-center">
                     <h2 class="text-base sm:text-lg font-black uppercase text-white tracking-wider">10 Enterprise AI Engines</h2>
-                    <p class="text-[10px] text-gray-400 font-mono mt-0.5">Powered by DeepSeek-R1 Reasoning Core</p>
+                    <p class="text-[10px] text-gray-400 font-mono mt-0.5">Powered by Google Gemini 2.5 Flash</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
@@ -215,8 +224,8 @@
                         <textarea id="prompt" rows="4" class="w-full bg-black border border-red-900/40 rounded-lg p-2.5 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none leading-relaxed" placeholder="${m.placeholder}"></textarea>
 
                         <div class="flex justify-between items-center">
-                            <span class="text-[9px] text-gray-500 font-mono"><i class="fa-solid fa-brain text-red-400 mr-1"></i> DeepSeek-R1-Distill-70B</span>
-                            <button id="runBtn" onclick="runFastAI()" class="neon-btn text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center">
+                            <span class="text-[9px] text-gray-500 font-mono"><i class="fa-solid fa-bolt text-yellow-400 mr-1"></i> Gemini 2.5 Flash</span>
+                            <button id="runBtn" onclick="runGeminiAI()" class="neon-btn text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center">
                                 <i class="fa-solid fa-bolt mr-1"></i> Synthesize
                             </button>
                         </div>
@@ -244,8 +253,8 @@
             alert("Copied!");
         }
 
-        async function runFastAI() {
-            const apiKey = localStorage.getItem('sentis_groq_key');
+        async function runGeminiAI() {
+            const apiKey = localStorage.getItem('sentis_gemini_key');
             if (!apiKey) { openSetupModal(); return; }
 
             const txt = document.getElementById('prompt').value.trim();
@@ -256,27 +265,35 @@
 
             btn.disabled = true;
             btn.classList.add('opacity-60');
-            out.innerHTML = `<div class="text-yellow-400 font-mono text-[11px] animate-pulse">🧠 DeepSeek Reasoning & Synthesizing...</div>`;
+            out.innerHTML = `<div class="text-yellow-400 font-mono text-[11px] animate-pulse">⚡ Gemini Synthesizing...</div>`;
 
             try {
-                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+                const res = await fetch(url, {
                     method: "POST",
-                    headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        model: "deepseek-r1-distill-llama-70b",
-                        messages: [{ role: "system", content: mods[view].sys }, { role: "user", content: txt }],
-                        temperature: 0.6,
-                        max_tokens: 1500
+                        systemInstruction: {
+                            parts: [{ text: mods[view].sys }]
+                        },
+                        contents: [{
+                            parts: [{ text: txt }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.5,
+                            maxOutputTokens: 1500
+                        }
                     })
                 });
 
                 const data = await res.json();
+
                 if (!res.ok || data.error) {
-                    out.innerHTML = `<span class="text-red-400 font-mono text-[11px]">❌ Error: ${data.error?.message || res.statusText}</span>`;
-                } else if (data.choices && data.choices[0]) {
-                    out.innerHTML = marked.parse(data.choices[0].message.content);
+                    out.innerHTML = `<span class="text-red-400 font-mono text-[11px]">❌ API Error: ${data.error?.message || res.statusText}</span>`;
+                } else if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                    out.innerHTML = marked.parse(data.candidates[0].content.parts[0].text);
                 } else {
-                    out.innerHTML = `<span class="text-amber-400 font-mono text-[11px]">⚠️ Empty response.</span>`;
+                    out.innerHTML = `<span class="text-amber-400 font-mono text-[11px]">⚠️ Empty response returned.</span>`;
                 }
             } catch (e) {
                 out.innerHTML = `<span class="text-red-400 font-mono text-[11px]">❌ Network Error: ${e.message}</span>`;
