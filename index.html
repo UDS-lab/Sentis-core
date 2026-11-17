@@ -2,80 +2,287 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SENTIS OS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SENTIS OS | Enterprise AI Operating System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#08080a', cardbg: '#121218' } } } }</script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#070709',
+                        cardbg: '#111116',
+                        accent: '#ef4444'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; }
+        body { width: 100%; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #450a0a; border-radius: 4px; }
+        .neon-border {
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+        .neon-btn {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            box-shadow: 0 0 12px rgba(220, 38, 38, 0.35);
+        }
+        #out h1, #out h2, #out h3 { color: #f87171; font-weight: 700; margin-top: 10px; margin-bottom: 4px; }
+        #out h1 { font-size: 1rem; }
+        #out h2 { font-size: 0.9rem; }
+        #out h3 { font-size: 0.8rem; }
+        #out p { margin-bottom: 6px; word-break: break-word; }
+        #out ul, #out ol { padding-left: 16px; margin-bottom: 6px; }
+        #out ul { list-style-type: disc; }
+        #out ol { list-style-type: decimal; }
+        #out strong { color: #ffffff; }
+        #out code { background: #1f1f27; padding: 2px 4px; border-radius: 3px; font-family: monospace; color: #fca5a5; font-size: 11px; }
+    </style>
 </head>
-<body class="bg-darkbg text-gray-100 font-sans min-h-screen p-6 flex flex-col items-center">
+<body class="bg-darkbg text-gray-100 font-sans min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
 
-    <div class="max-w-3xl w-full space-y-6">
-        <header class="flex justify-between items-center border-b border-red-900/40 pb-4">
-            <h1 class="text-lg font-black tracking-widest text-red-500 font-mono">SENTIS OS</h1>
-            <button onclick="setKey()" class="text-xs bg-red-950 text-red-300 px-3 py-1.5 rounded-lg border border-red-800">
-                <i class="fa-solid fa-key mr-1"></i> Set API Key
-            </button>
-        </header>
-
-        <div class="bg-cardbg border border-red-900/30 p-5 rounded-2xl space-y-4 shadow-xl">
-            <textarea id="prompt" rows="4" class="w-full bg-black border border-red-900/40 rounded-xl p-3 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none" placeholder="Enter prompt here..."></textarea>
-            <button onclick="runAI()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg">
-                <i class="fa-solid fa-bolt"></i><span>Synthesize (Sub-Second)</span>
-            </button>
+    <!-- Header -->
+    <header class="border-b border-red-900/30 bg-darkbg/95 px-3 py-3 flex justify-between items-center sticky top-0 z-40 w-full">
+        <div class="flex items-center space-x-2 cursor-pointer" onclick="renderGrid()">
+            <div class="w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
+            <span class="text-sm font-black tracking-widest text-white font-mono">
+                SENTIS<span class="text-red-400 text-[9px] ml-1.5 bg-red-950 px-1.5 py-0.5 rounded border border-red-800">OS v2.0</span>
+            </span>
         </div>
 
-        <div class="bg-cardbg border border-red-900/30 p-5 rounded-2xl min-h-[150px]">
-            <div id="out" class="text-xs text-gray-300 leading-relaxed">Awaiting input...</div>
+        <div class="hidden sm:block text-center">
+            <h1 id="hTitle" class="text-[11px] font-bold text-red-400 font-mono uppercase tracking-wider">Enterprise Command Core</h1>
+            <p id="hSub" class="text-[9px] text-emerald-400 font-mono">● LPU Sub-Second Inference Ready</p>
+        </div>
+
+        <div class="flex items-center space-x-2">
+            <span id="keyStatusBadge" class="hidden md:inline-block text-[9px] font-mono px-2 py-0.5 rounded border"></span>
+            <button onclick="openSetupModal()" class="text-[11px] bg-red-950/50 text-red-200 px-2.5 py-1.5 rounded-lg border border-red-800 flex items-center">
+                <i class="fa-solid fa-sliders text-red-400 mr-1"></i> Config
+            </button>
+        </div>
+    </header>
+
+    <!-- Workspace -->
+    <main class="flex-1 p-3 sm:p-6 flex flex-col max-w-5xl w-full mx-auto">
+        <div id="workspace" class="flex-1 flex flex-col justify-center w-full"></div>
+    </main>
+
+    <!-- Config Modal -->
+    <div id="setupModal" class="fixed inset-0 bg-black/9oz z-50 flex items-center justify-center p-3 hidden">
+        <div class="bg-cardbg max-w-sm w-full p-5 rounded-2xl border border-red-800/75 space-y-3 shadow-2xl">
+            <div class="text-center space-y-1">
+                <div class="w-8 h-8 bg-red-950 border border-red-800 rounded-xl flex items-center justify-center mx-auto text-red-500 mb-1">
+                    <i class="fa-solid fa-microchip text-sm"></i>
+                </div>
+                <h3 class="text-sm font-bold text-white">Neural Configuration</h3>
+                <p class="text-[10px] text-gray-400">Enter Groq API Key to activate all 10 engines.</p>
+            </div>
+
+            <div class="space-y-2 text-left">
+                <div>
+                    <label class="text-[9px] font-mono text-gray-400 uppercase ml-1">Groq API Key</label>
+                    <input type="password" id="groqInput" placeholder="gsk_..." class="w-full mt-1 bg-black border border-red-900/50 text-xs p-2.5 rounded-lg text-white font-mono focus:outline-none focus:border-red-500">
+                    <a href="https://console.groq.com/keys" target="_blank" class="text-[9px] text-red-400 hover:underline ml-1 mt-0.5 inline-block">Get free key →</a>
+                </div>
+            </div>
+
+            <div class="pt-2 space-y-1.5">
+                <button onclick="saveConfig()" class="neon-btn text-white text-xs font-bold w-full py-2.5 rounded-lg">Activate Brain</button>
+                <button onclick="closeSetupModal()" class="text-[11px] text-gray-500 hover:text-gray-300 w-full py-1">Close</button>
+            </div>
         </div>
     </div>
 
     <script>
-        function setKey() {
-            let key = prompt("Enter your Groq API Key (gsk_...):", localStorage.getItem('groq_key') || '');
-            if (key) {
-                localStorage.setItem('groq_key', key.trim());
-                alert("API Key saved locally!");
+        const mods = {
+            inbox: { title: "Inbox Command", icon: "fa-inbox", tag: "COMMS", desc: "Summarizes email threads & drafts replies.", placeholder: "Paste client email thread here...", sys: "You are an Executive Communications Director. Summarize in 3 bullet points and write a sharp executive reply." },
+            qualify: { title: "Lead Qualify", icon: "fa-filter", tag: "REVENUE", desc: "Scores prospect intent & closing strategy.", placeholder: "Paste lead form or notes...", sys: "You are a B2B Revenue Strategist. Output: Score (0-100), Budget Tier, Red Flags, Closing Angle." },
+            proposal: { title: "Deal Proposal", icon: "fa-file-contract", tag: "CLOSING", desc: "Turns raw notes into structured proposals.", placeholder: "Paste discovery call notes...", sys: "You are an Enterprise Deal Architect. Create a structured B2B Proposal: Summary, Scope, Timeline, ROI." },
+            sync: { title: "SOP Co-Pilot", icon: "fa-brain", tag: "OPS", desc: "Turns workflows into step-by-step SOPs.", placeholder: "Describe a workflow to standardize...", sys: "You are a COO. Convert into a clear SOP with Objective, Prerequisites, and Numbered Steps." },
+            call: { title: "Call Intelligence", icon: "fa-microphone-lines", tag: "INTEL", desc: "Extracts decisions, objections, action items.", placeholder: "Paste meeting transcript...", sys: "You are an Enterprise Deal Analyst. Extract: Key Decisions, Objections, Action Items, Momentum Rating." },
+            adcopy: { title: "Ad Copy Matrix", icon: "fa-rectangle-ad", tag: "GROWTH", desc: "Generates high-converting B2B ad hooks.", placeholder: "Describe your offer and audience...", sys: "You are a B2B Copywriter. Create 3 ad variations with Headlines, Body, and CTAs." },
+            competitor: { title: "Competitor Radar", icon: "fa-radar", tag: "STRATEGY", desc: "Breaks down competitors & counter-angles.", placeholder: "Paste competitor details...", sys: "You are a Competitive Strategist. Output Positioning, Strengths, Weaknesses, and Counter-Script." },
+            script: { title: "Sales Script", icon: "fa-scroll", tag: "SALES", desc: "Builds cold outreach & objection scripts.", placeholder: "Enter offer or tough objection...", sys: "You are an Elite Closer. Build a closing script and 3 objection rebuttals." },
+            churn: { title: "Churn Shield", icon: "fa-shield-halved", tag: "RETENTION", desc: "Diagnoses risk & 7-day save playbook.", placeholder: "Paste client feedback or tickets...", sys: "You are a VP of Customer Success. Diagnose risk level, root cause, and 7-day recovery plan." },
+            onboarding: { title: "Onboarding", icon: "fa-diagram-project", tag: "DELIVERY", desc: "Creates white-glove kickoff roadmap.", placeholder: "Enter client package details...", sys: "You are a Delivery Director. Design a 30-Day Onboarding Roadmap and Welcome Email." }
+        };
+
+        let view = 'grid';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateStatusBadge();
+            renderGrid();
+        });
+
+        function updateStatusBadge() {
+            const badge = document.getElementById('keyStatusBadge');
+            const hasKey = !!localStorage.getItem('sentis_groq_key');
+            badge.classList.remove('hidden');
+            if (hasKey) {
+                badge.className = "hidden md:inline-block text-[9px] font-mono px-2 py-0.5 rounded border border-emerald-800 bg-emerald-950/40 text-emerald-400";
+                badge.innerText = "● CONNECTED";
+            } else {
+                badge.className = "hidden md:inline-block text-[9px] font-mono px-2 py-0.5 rounded border border-amber-800 bg-amber-950/40 text-amber-400 cursor-pointer";
+                badge.innerText = "▲ NO KEY";
+                badge.onclick = openSetupModal;
             }
         }
 
-        async function runAI() {
-            let key = localStorage.getItem('groq_key');
-            if (!key) {
-                setKey();
-                return;
-            }
+        function openSetupModal() {
+            document.getElementById('groqInput').value = localStorage.getItem('sentis_groq_key'] || '';
+            document.getElementById('setupModal').classList.remove('hidden');
+        }
 
-            let txt = document.getElementById('prompt').value.trim();
-            let out = document.getElementById('out');
-            if (!txt) return;
+        function closeSetupModal() {
+            document.getElementById('setupModal').classList.add('hidden');
+        }
 
-            out.innerHTML = `<span class="text-yellow-400 font-mono animate-pulse">⚡ Processing...</span>`;
+        function saveConfig() {
+            const val = document.getElementById('groqInput').value.trim();
+            if (val) localStorage.setItem('sentis_groq_key', val);
+            closeSetupModal();
+            updateStatusBadge();
+            if (view === 'grid') renderGrid();
+        }
+
+        function renderGrid() {
+            view = 'grid';
+            const box = document.getElementById('workspace');
+            const hasKey = !!localStorage.getItem('sentis_groq_key');
+
+            box.innerHTML = `
+                ${!hasKey ? `
+                <div onclick="openSetupModal()" class="mb-4 bg-amber-950/30 border border-amber-700/60 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:bg-amber-950/50 w-full">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xs"></i>
+                        <span class="text-[11px] text-amber-200 font-mono">Groq API Key required. Tap here to connect.</span>
+                    </div>
+                    <span class="text-[11px] font-bold text-amber-400">Setup →</span>
+                </div>` : ''}
+
+                <div class="mb-4 text-center">
+                    <h2 class="text-base sm:text-lg font-black uppercase text-white tracking-wider">10 Enterprise AI Engines</h2>
+                    <p class="text-[10px] text-gray-400 font-mono mt-0.5">Select a specialized module</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
+                    ${Object.keys(mods).map(k => `
+                        <div onclick="openMod('${k}')" class="neon-border bg-cardbg p-3.5 rounded-xl cursor-pointer flex flex-col justify-between space-y-2 hover:border-red-500/60 transition">
+                            <div class="flex justify-between items-center">
+                                <div class="w-7 h-7 bg-red-950 border border-red-800 rounded-lg flex items-center justify-center text-red-400 text-xs">
+                                    <i class="fa-solid ${mods[k].icon}"></i>
+                                </div>
+                                <span class="text-[8px] font-mono text-gray-400 bg-black px-1.5 py-0.5 rounded border border-gray-800">${mods[k].tag}</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xs font-bold text-white">${mods[k].title}</h3>
+                                <p class="text-[10px] text-gray-400 mt-0.5 leading-snug">${mods[k].desc}</p>
+                            </div>
+                            <div class="text-[10px] font-semibold text-red-400 flex items-center">
+                                Launch <i class="fa-solid fa-arrow-right ml-1 text-[9px]"></i>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        function openMod(key) {
+            view = key;
+            const m = mods[key];
+            const box = document.getElementById('workspace');
+
+            box.innerHTML = `
+                <div class="space-y-3 w-full">
+                    <div class="flex justify-between items-center">
+                        <button onclick="renderGrid()" class="bg-cardbg text-red-300 text-[11px] px-3 py-1.5 rounded-lg border border-red-900/50">
+                            <i class="fa-solid fa-chevron-left mr-1"></i> Engines
+                        </button>
+                        <span class="text-[9px] font-mono text-gray-400 bg-cardbg px-2 py-0.5 rounded border border-gray-800">${m.tag}</span>
+                    </div>
+
+                    <div class="neon-border bg-cardbg p-3.5 rounded-xl space-y-2.5">
+                        <h2 class="text-xs font-bold text-white flex items-center">
+                            <i class="fa-solid ${m.icon} text-red-500 mr-1.5"></i>${m.title}
+                        </h2>
+                        <textarea id="prompt" rows="4" class="w-full bg-black border border-red-900/40 rounded-lg p-2.5 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none leading-relaxed" placeholder="${m.placeholder}"></textarea>
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-[9px] text-gray-500 font-mono"><i class="fa-solid fa-bolt text-yellow-400 mr-1"></i> Groq LPU</span>
+                            <button id="runBtn" onclick="runFastAI()" class="neon-btn text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center">
+                                <i class="fa-solid fa-bolt mr-1"></i> Synthesize
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="neon-border bg-cardbg p-3.5 rounded-xl space-y-2 min-h-[180px]">
+                        <div class="flex justify-between border-b border-red-900/30 pb-2 items-center">
+                            <span class="text-[11px] font-bold text-red-400 font-mono uppercase">Output</span>
+                            <div class="flex space-x-1.5">
+                                <button onclick="copyOutput()" class="text-[9px] bg-black text-gray-300 px-2 py-1 rounded border border-gray-800"><i class="fa-regular fa-copy mr-1"></i> Copy</button>
+                                <button onclick="window.print()" class="text-[9px] bg-red-950 text-red-300 px-2 py-1 rounded border border-red-800"><i class="fa-solid fa-file-pdf mr-1"></i> PDF</button>
+                            </div>
+                        </div>
+                        <div id="printableArea">
+                            <div id="out" class="text-[11px] text-gray-300 leading-relaxed">Awaiting input...</div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function copyOutput() {
+            const text = document.getElementById('out').innerText;
+            if (!text || text === "Awaiting input...") return;
+            navigator.clipboard.writeText(text);
+            alert("Copied!");
+        }
+
+        async function runFastAI() {
+            const groqKey = localStorage.getItem('sentis_groq_key');
+            if (!groqKey) { openSetupModal(); return; }
+
+            const txt = document.getElementById('prompt').value.trim();
+            const out = document.getElementById('out');
+            const btn = document.getElementById('runBtn');
+
+            if (!txt) { out.innerHTML = `<span class="text-amber-400 font-mono text-[11px]">⚠️ Enter input text first.</span>`; return; }
+
+            btn.disabled = true;
+            btn.classList.add('opacity-60');
+            out.innerHTML = `<div class="text-yellow-400 font-mono text-[11px] animate-pulse">⚡ Synthesizing...</div>`;
 
             try {
-                let res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${key}`,
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Authorization": `Bearer ${groqKey}`, "Content-Type": "application/json" },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "user", content: txt }],
-                        temperature: 0.6,
-                        max_tokens: 1024
+                        messages: [{ role: "system", content: mods[view].sys }, { role: "user", content: txt }],
+                        temperature: 0.4,
+                        max_tokens: 1200
                     })
                 });
 
-                let data = await res.json();
-                if (data.choices && data.choices[0]) {
+                const data = await res.json();
+                if (!res.ok || data.error) {
+                    out.innerHTML = `<span class="text-red-400 font-mono text-[11px]">❌ Error: ${data.error?.message || res.statusText}</span>`;
+                } else if (data.choices && data.choices[0]) {
                     out.innerHTML = marked.parse(data.choices[0].message.content);
                 } else {
-                    out.innerHTML = `<span class="text-red-400">Error: ${data.error?.message || 'Unknown error'}</span>`;
+                    out.innerHTML = `<span class="text-amber-400 font-mono text-[11px]">⚠️ Empty response.</span>`;
                 }
             } catch (e) {
-                out.innerHTML = `<span class="text-red-400">Network Error: ${e.message}</span>`;
+                out.innerHTML = `<span class="text-red-400 font-mono text-[11px]">❌ Network Error: ${e.message}</span>`;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-60');
             }
         }
     </script>
