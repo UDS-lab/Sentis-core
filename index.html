@@ -53,13 +53,13 @@
         <div class="flex items-center space-x-2 cursor-pointer" onclick="renderGrid()">
             <div class="w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
             <span class="text-sm font-black tracking-widest text-white font-mono">
-                SENTIS<span class="text-red-400 text-[9px] ml-1.5 bg-red-950 px-1.5 py-0.5 rounded border border-red-800">OS v2.0</span>
+                SENTIS<span class="text-red-400 text-[9px] ml-1.5 bg-red-950 px-1.5 py-0.5 rounded border border-red-800">DEEPSEEK OS</span>
             </span>
         </div>
 
         <div class="hidden sm:block text-center">
-            <h1 id="hTitle" class="text-[11px] font-bold text-red-400 font-mono uppercase tracking-wider">Enterprise Command Core</h1>
-            <p id="hSub" class="text-[9px] text-emerald-400 font-mono">● LPU Sub-Second Inference Ready</p>
+            <h1 id="hTitle" class="text-[11px] font-bold text-red-400 font-mono uppercase tracking-wider">DeepSeek-R1 LPU Core</h1>
+            <p id="hSub" class="text-[9px] text-emerald-400 font-mono">● Reasoning Engine Ready</p>
         </div>
 
         <div class="flex items-center space-x-2">
@@ -76,26 +76,26 @@
     </main>
 
     <!-- Config Modal -->
-    <div id="setupModal" class="fixed inset-0 bg-black/9oz z-50 flex items-center justify-center p-3 hidden">
+    <div id="setupModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-3 hidden">
         <div class="bg-cardbg max-w-sm w-full p-5 rounded-2xl border border-red-800/75 space-y-3 shadow-2xl">
             <div class="text-center space-y-1">
                 <div class="w-8 h-8 bg-red-950 border border-red-800 rounded-xl flex items-center justify-center mx-auto text-red-500 mb-1">
-                    <i class="fa-solid fa-microchip text-sm"></i>
+                    <i class="fa-solid fa-brain text-sm"></i>
                 </div>
-                <h3 class="text-sm font-bold text-white">Neural Configuration</h3>
-                <p class="text-[10px] text-gray-400">Enter Groq API Key to activate all 10 engines.</p>
+                <h3 class="text-sm font-bold text-white">DeepSeek Neural Setup</h3>
+                <p class="text-[10px] text-gray-400">Enter your API Key to activate all 10 engines.</p>
             </div>
 
             <div class="space-y-2 text-left">
                 <div>
-                    <label class="text-[9px] font-mono text-gray-400 uppercase ml-1">Groq API Key</label>
+                    <label class="text-[9px] font-mono text-gray-400 uppercase ml-1">API Key</label>
                     <input type="password" id="groqInput" placeholder="gsk_..." class="w-full mt-1 bg-black border border-red-900/50 text-xs p-2.5 rounded-lg text-white font-mono focus:outline-none focus:border-red-500">
                     <a href="https://console.groq.com/keys" target="_blank" class="text-[9px] text-red-400 hover:underline ml-1 mt-0.5 inline-block">Get free key →</a>
                 </div>
             </div>
 
             <div class="pt-2 space-y-1.5">
-                <button onclick="saveConfig()" class="neon-btn text-white text-xs font-bold w-full py-2.5 rounded-lg">Activate Brain</button>
+                <button onclick="saveConfig()" class="neon-btn text-white text-xs font-bold w-full py-2.5 rounded-lg">Activate DeepSeek Brain</button>
                 <button onclick="closeSetupModal()" class="text-[11px] text-gray-500 hover:text-gray-300 w-full py-1">Close</button>
             </div>
         </div>
@@ -128,7 +128,7 @@
             badge.classList.remove('hidden');
             if (hasKey) {
                 badge.className = "hidden md:inline-block text-[9px] font-mono px-2 py-0.5 rounded border border-emerald-800 bg-emerald-950/40 text-emerald-400";
-                badge.innerText = "● CONNECTED";
+                badge.innerText = "● DEEPSEEK CONNECTED";
             } else {
                 badge.className = "hidden md:inline-block text-[9px] font-mono px-2 py-0.5 rounded border border-amber-800 bg-amber-950/40 text-amber-400 cursor-pointer";
                 badge.innerText = "▲ NO KEY";
@@ -137,7 +137,7 @@
         }
 
         function openSetupModal() {
-            document.getElementById('groqInput').value = localStorage.getItem('sentis_groq_key'] || '';
+            document.getElementById('groqInput').value = localStorage.getItem('sentis_groq_key') || '';
             document.getElementById('setupModal').classList.remove('hidden');
         }
 
@@ -163,14 +163,14 @@
                 <div onclick="openSetupModal()" class="mb-4 bg-amber-950/30 border border-amber-700/60 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:bg-amber-950/50 w-full">
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xs"></i>
-                        <span class="text-[11px] text-amber-200 font-mono">Groq API Key required. Tap here to connect.</span>
+                        <span class="text-[11px] text-amber-200 font-mono">API Key required. Tap here to connect.</span>
                     </div>
                     <span class="text-[11px] font-bold text-amber-400">Setup →</span>
                 </div>` : ''}
 
                 <div class="mb-4 text-center">
                     <h2 class="text-base sm:text-lg font-black uppercase text-white tracking-wider">10 Enterprise AI Engines</h2>
-                    <p class="text-[10px] text-gray-400 font-mono mt-0.5">Select a specialized module</p>
+                    <p class="text-[10px] text-gray-400 font-mono mt-0.5">Powered by DeepSeek-R1 Reasoning Core</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
@@ -215,7 +215,7 @@
                         <textarea id="prompt" rows="4" class="w-full bg-black border border-red-900/40 rounded-lg p-2.5 text-xs text-gray-200 focus:outline-none focus:border-red-500 resize-none leading-relaxed" placeholder="${m.placeholder}"></textarea>
 
                         <div class="flex justify-between items-center">
-                            <span class="text-[9px] text-gray-500 font-mono"><i class="fa-solid fa-bolt text-yellow-400 mr-1"></i> Groq LPU</span>
+                            <span class="text-[9px] text-gray-500 font-mono"><i class="fa-solid fa-brain text-red-400 mr-1"></i> DeepSeek-R1-Distill-70B</span>
                             <button id="runBtn" onclick="runFastAI()" class="neon-btn text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center">
                                 <i class="fa-solid fa-bolt mr-1"></i> Synthesize
                             </button>
@@ -245,8 +245,8 @@
         }
 
         async function runFastAI() {
-            const groqKey = localStorage.getItem('sentis_groq_key');
-            if (!groqKey) { openSetupModal(); return; }
+            const apiKey = localStorage.getItem('sentis_groq_key');
+            if (!apiKey) { openSetupModal(); return; }
 
             const txt = document.getElementById('prompt').value.trim();
             const out = document.getElementById('out');
@@ -256,17 +256,17 @@
 
             btn.disabled = true;
             btn.classList.add('opacity-60');
-            out.innerHTML = `<div class="text-yellow-400 font-mono text-[11px] animate-pulse">⚡ Synthesizing...</div>`;
+            out.innerHTML = `<div class="text-yellow-400 font-mono text-[11px] animate-pulse">🧠 DeepSeek Reasoning & Synthesizing...</div>`;
 
             try {
                 const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
-                    headers: { "Authorization": `Bearer ${groqKey}`, "Content-Type": "application/json" },
+                    headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        model: "llama-3.3-70b-versatile",
+                        model: "deepseek-r1-distill-llama-70b",
                         messages: [{ role: "system", content: mods[view].sys }, { role: "user", content: txt }],
-                        temperature: 0.4,
-                        max_tokens: 1200
+                        temperature: 0.6,
+                        max_tokens: 1500
                     })
                 });
 
