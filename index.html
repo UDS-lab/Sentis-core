@@ -8,55 +8,64 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkbg: '#050507', cardbg: '#0f0f13' } } } }
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { obsidian: '#040406', panel: '#0b0b10', crimson: '#ff1e42' } } } }
     </script>
     <style>
         * { box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; margin: 0; padding: 0; }
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; background: #040406; }
         ::-webkit-scrollbar { width: 2px; }
-        ::-webkit-scrollbar-thumb { background: #3a0a10; }
-        .neon-border { border: 1px solid rgba(239, 68, 68, 0.3); }
-        .neon-btn { background: linear-gradient(135deg, #dc2626, #991b1b); }
-        #out h1, #out h2, #out h3 { color: #f87171; font-weight: 700; margin: 4px 0 2px 0; font-size: 11px; }
-        #out p { margin-bottom: 3px; font-size: 10px; }
-        #out ul { padding-left: 12px; margin-bottom: 3px; font-size: 10px; list-style-type: disc; }
-        #out strong { color: #ffffff; }
+        ::-webkit-scrollbar-thumb { background: #ff1e42; }
+        .neon-card { background: rgba(11, 11, 16, 0.95); border: 1px solid rgba(255, 30, 66, 0.3); }
+        .neon-btn { background: linear-gradient(135deg, #ff1e42, #99001a); }
+        .neon-input { background: #050508; border: 1px solid rgba(255, 30, 66, 0.3); }
+        .neon-input:focus { outline: none; border-color: #ff1e42; }
+        #out h1, #out h2, #out h3 { color: #ff4d6d; font-weight: 700; margin: 3px 0 1px 0; font-size: 10px; }
+        #out p { margin-bottom: 3px; font-size: 9px; line-height: 1.35; }
+        #out ul { padding-left: 10px; margin-bottom: 3px; font-size: 9px; list-style-type: disc; }
+        #out strong { color: #fff; }
     </style>
 </head>
-<body class="bg-darkbg text-gray-100 font-sans flex flex-col h-screen select-none">
+<body class="text-gray-100 font-sans flex flex-col h-screen select-none">
 
-    <!-- Header -->
-    <header class="border-b border-red-900/30 bg-darkbg px-3 py-2 flex justify-between items-center shrink-0">
-        <div class="flex items-center space-x-1.5 cursor-pointer" onclick="renderGrid()" ondblclick="openSetupModal()">
-            <div class="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping"></div>
-            <span class="text-xs font-black tracking-wider text-white font-mono">SENTIS<span class="text-red-500 text-[8px] ml-1">OS</span></span>
-        </div>
-        <div id="statusText" class="text-[9px] font-mono text-gray-400">● Ready</div>
-        <button onclick="openSetupModal()" class="text-[10px] bg-red-950 text-red-200 px-2 py-1 rounded border border-red-800"><i class="fa-solid fa-key mr-1"></i>Config</button>
-    </header>
-
-    <!-- Workspace -->
-    <main class="flex-1 p-2 flex flex-col max-w-4xl w-full mx-auto overflow-hidden">
-        <div id="workspace" class="flex-1 flex flex-col h-full overflow-hidden"></div>
-    </main>
-
-    <!-- Modal -->
-    <div id="setupModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-3 hidden">
-        <div class="bg-cardbg max-w-xs w-full p-3.5 rounded-xl border border-red-800 space-y-2">
-            <h3 class="text-xs font-bold text-white text-center">Neural & License Config</h3>
-            <input type="password" id="licenseInput" placeholder="Access Key / Master Key" class="w-full bg-black border border-red-900 text-[10px] p-1.5 rounded text-white font-mono">
-            <input type="password" id="geminiInput" placeholder="Gemini API Key (AIzaSy...)" class="w-full bg-black border border-red-900 text-[10px] p-1.5 rounded text-white font-mono">
-            <div class="flex space-x-2 pt-1">
-                <button onclick="saveConfig()" class="neon-btn text-white text-[10px] font-bold w-full py-1.5 rounded">Save</button>
-                <button onclick="closeSetupModal()" class="text-[10px] bg-gray-900 text-gray-400 w-full py-1.5 rounded">Close</button>
+    <!-- GATE -->
+    <div id="authGate" class="fixed inset-0 z-50 flex items-center justify-center p-3 bg-obsidian/95">
+        <div class="neon-card max-w-xs w-full p-4 rounded-xl space-y-2.5">
+            <div class="text-center space-y-0.5">
+                <h1 class="text-xs font-black tracking-widest text-white font-mono">SENTIS OS</h1>
+                <p class="text-[8px] text-red-400 font-mono uppercase">Neural Authentication</p>
+            </div>
+            <div class="space-y-2">
+                <input type="password" id="gateLicense" placeholder="Master or Client Key..." class="neon-input w-full px-2.5 py-1.5 rounded-lg text-[10px] text-white font-mono">
+                <input type="password" id="gateGemini" placeholder="Gemini API Key (AIzaSy...)" class="neon-input w-full px-2.5 py-1.5 rounded-lg text-[10px] text-white font-mono">
+                <div id="gateError" class="text-[9px] text-crimson font-mono text-center hidden"></div>
+                <button onclick="unlockSystem()" class="neon-btn w-full py-1.5 rounded-lg text-[10px] font-black text-white font-mono uppercase">Authenticate</button>
             </div>
         </div>
     </div>
 
+    <!-- HEADER -->
+    <header class="border-b border-crimson/30 bg-obsidian px-2.5 py-1.5 flex justify-between items-center shrink-0">
+        <div class="flex items-center space-x-1.5 cursor-pointer" onclick="goHome()">
+            <span class="w-1.5 h-1.5 rounded-full bg-crimson animate-ping"></span>
+            <span class="text-xs font-black tracking-wider text-white font-mono">SENTIS</span>
+            <span id="roleBadge" class="text-[7px] font-mono px-1 py-0.5 rounded bg-red-950 border border-crimson/50 text-red-300"></span>
+        </div>
+        <div class="flex items-center space-x-1.5">
+            <button onclick="openSettings()" class="text-[9px] font-mono bg-red-950/40 text-red-200 px-2 py-0.5 rounded border border-crimson/40"><i class="fa-solid fa-key mr-1"></i>Keys</button>
+            <button onclick="lockSystem()" class="text-[9px] font-mono bg-black text-gray-400 px-2 py-0.5 rounded border border-red-950"><i class="fa-solid fa-lock"></i></button>
+        </div>
+    </header>
+
+    <!-- WORKSPACE -->
+    <main class="flex-1 p-2 flex flex-col max-w-4xl w-full mx-auto overflow-hidden">
+        <div id="workspace" class="flex-1 flex flex-col h-full overflow-hidden"></div>
+    </main>
+
     <script>
+        const MASTER_KEY = "UDS-MASTER-2026";
         const mods = {
             inbox: { title: "Inbox Command", icon: "fa-inbox", tag: "COMMS", sys: "Summarize in 3 bullet points and write a sharp executive reply." },
-            qualify: { title: "Lead Qualify", icon: "fa-filter", tag: "REV", sys: "Output: Qualification Score (0-100), Budget Tier, Red Flags, Closing Angle." },
+            qualify: { title: "Lead Qualify", icon: "fa-filter", tag: "REV", sys: "Output: Score (0-100), Budget Tier, Red Flags, Closing Angle." },
             proposal: { title: "Deal Proposal", icon: "fa-file-contract", tag: "DEAL", sys: "Create a structured B2B Proposal: Summary, Scope, Timeline, ROI." },
             sync: { title: "SOP Co-Pilot", icon: "fa-brain", tag: "OPS", sys: "Convert into a clear SOP with Objective, Prerequisites, and Numbered Steps." },
             call: { title: "Call Intel", icon: "fa-microphone-lines", tag: "INT", sys: "Extract: Key Decisions, Objections, Action Items, Momentum Rating." },
@@ -66,112 +75,133 @@
             churn: { title: "Churn Shield", icon: "fa-shield-halved", tag: "RET", sys: "Diagnose risk level, root cause, and a 7-day recovery plan." },
             onboarding: { title: "Onboarding", icon: "fa-diagram-project", tag: "DEL", sys: "Design a 30-Day Onboarding Roadmap and Welcome Email." }
         };
+        let activeEngine = null;
 
-        let view = 'grid';
-        const MASTER_KEY = "UDS-MASTER-2026";
+        window.addEventListener('DOMContentLoaded', () => { checkAuth(); });
 
-        window.addEventListener('DOMContentLoaded', () => { checkMode(); });
-
-        function checkMode() {
-            if (localStorage.getItem('sentis_current_mode') === 'admin') renderAdmin();
-            else renderGrid();
+        function checkAuth() {
+            let role = sessionStorage.getItem('sentis_role');
+            let lic = localStorage.getItem('sentis_lic') || '';
+            let gem = localStorage.getItem('sentis_gem') || '';
+            document.getElementById('gateLicense').value = lic;
+            document.getElementById('gateGemini').value = gem;
+            if (!role) document.getElementById('authGate').classList.remove('hidden');
+            else { document.getElementById('authGate').classList.add('hidden'); route(role); }
         }
 
-        function openSetupModal() {
-            document.getElementById('geminiInput').value = localStorage.getItem('sentis_gemini_key') || '';
-            document.getElementById('licenseInput').value = localStorage.getItem('sentis_saved_lic') || '';
-            document.getElementById('setupModal').classList.remove('hidden');
+        function unlockSystem() {
+            let lic = document.getElementById('gateLicense').value.trim();
+            let gem = document.getElementById('gateGemini').value.trim();
+            let err = document.getElementById('gateError');
+            if (!lic) { err.innerText = "ENTER LICENSE KEY"; err.classList.remove('hidden'); return; }
+            if (gem) localStorage.setItem('sentis_gem', gem);
+            if (lic === MASTER_KEY) {
+                localStorage.setItem('sentis_lic', lic);
+                sessionStorage.setItem('sentis_role', 'admin');
+                document.getElementById('authGate').classList.add('hidden');
+                route('admin'); return;
+            }
+            let reg = JSON.parse(localStorage.getItem('sentis_reg') || '[]');
+            let match = reg.find(x => x.key === lic);
+            if (match || lic.startsWith('SENTIS-ENT-')) {
+                let name = match ? match.client : (lic.split('-')[2] || 'CLIENT');
+                localStorage.setItem('sentis_lic', lic);
+                localStorage.setItem('sentis_cname', name);
+                sessionStorage.setItem('sentis_role', 'client');
+                document.getElementById('authGate').classList.add('hidden');
+                route('client'); return;
+            }
+            err.innerText = "INVALID KEY"; err.classList.remove('hidden');
         }
-        function closeSetupModal() { document.getElementById('setupModal').classList.add('hidden'); }
 
-        function saveConfig() {
-            let g = document.getElementById('geminiInput').value.trim();
-            let l = document.getElementById('licenseInput').value.trim();
-            if (g) localStorage.setItem('sentis_gemini_key', g);
-            if (l === MASTER_KEY) {
-                localStorage.setItem('sentis_current_mode', 'admin');
-                closeSetupModal(); renderAdmin(); return;
-            }
-            if (l) {
-                localStorage.setItem('sentis_saved_lic', l);
-                let p = l.split('-');
-                if(p[2]) localStorage.setItem('sentis_active_client', p[2]);
-            }
-            localStorage.setItem('sentis_current_mode', 'client');
-            closeSetupModal(); renderGrid();
+        function openSettings() {
+            document.getElementById('gateLicense').value = localStorage.getItem('sentis_lic') || '';
+            document.getElementById('gateGemini').value = localStorage.getItem('sentis_gem') || '';
+            document.getElementById('gateError').classList.add('hidden');
+            document.getElementById('authGate').classList.remove('hidden');
+        }
+        function lockSystem() { sessionStorage.removeItem('sentis_role'); document.getElementById('authGate').classList.remove('hidden'); }
+        function goHome() { route(sessionStorage.getItem('sentis_role') || 'client'); }
+
+        function route(role) {
+            document.getElementById('roleBadge').innerText = role === 'admin' ? "👑 ADMIN" : (localStorage.getItem('sentis_cname') || 'CLIENT');
+            if (role === 'admin') renderAdmin(); else renderGrid();
         }
 
         function renderAdmin() {
-            document.getElementById('statusText').innerText = "👑 ADMIN";
-            let reg = JSON.parse(localStorage.getItem('sentis_registry') || '[]');
+            let reg = JSON.parse(localStorage.getItem('sentis_reg') || '[]');
             document.getElementById('workspace').innerHTML = `
-                <div class="flex flex-col h-full space-y-2">
-                    <div class="flex justify-between items-center bg-red-950/30 p-2 rounded border border-red-900">
-                        <span class="text-[10px] text-red-400 font-mono">Master Control</span>
-                        <button onclick="localStorage.setItem('sentis_current_mode','client');renderGrid();" class="text-[9px] bg-red-900 px-2 py-0.5 rounded text-white">Client View</button>
+                <div class="flex flex-col h-full space-y-2 overflow-hidden">
+                    <div class="flex justify-between items-center bg-red-950/30 p-2 rounded border border-crimson/40 shrink-0">
+                        <span class="text-[9px] text-red-300 font-mono">👑 Master Admin</span>
+                        <button onclick="renderGrid()" class="text-[9px] bg-crimson px-2 py-0.5 rounded text-white font-mono">Client View →</button>
                     </div>
-                    <button onclick="genKey()" class="neon-btn text-white text-[10px] font-bold py-1.5 rounded">Issue License Key</button>
+                    <button onclick="genKey()" class="neon-btn text-white text-[9px] font-bold py-1.5 rounded shrink-0">+ Issue Key</button>
                     <div class="flex-1 overflow-y-auto space-y-1">
-                        ${reg.map((r,i)=>`<div class="bg-black p-1.5 rounded border border-red-900/30 flex justify-between text-[10px] font-mono"><span>${r.c} (${r.k})</span><button onclick="delKey(${i})" class="text-red-400">✕</button></div>`).join('')}
+                        ${reg.length === 0 ? '<div class="text-[9px] text-gray-500 text-center font-mono mt-4">No keys issued.</div>' : reg.map((r,i)=>`
+                            <div class="bg-black p-1.5 rounded border border-crimson/30 flex justify-between text-[9px] font-mono items-center">
+                                <span class="text-white">${r.client} <span class="text-crimson ml-1">${r.key}</span></span>
+                                <button onclick="delKey(${i})" class="text-red-400 px-1">✕</button>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>`;
         }
 
         function genKey() {
-            let n = prompt("Client Name:"); if(!n) return;
-            let k = 'SENTIS-ENT-' + n.toUpperCase().replace(/[^A-Z]/g,'') + '-' + Math.floor(100+Math.random()*900);
-            let reg = JSON.parse(localStorage.getItem('sentis_registry') || '[]');
-            reg.push({c:n, k:k}); localStorage.setItem('sentis_registry', JSON.stringify(reg)); renderAdmin();
+            let n = prompt("Client Name:"); if (!n) return;
+            let k = 'SENTIS-ENT-' + n.toUpperCase().replace(/[^A-Z]/g,'').slice(0,6) + '-' + Math.floor(100+Math.random()*900);
+            let reg = JSON.parse(localStorage.getItem('sentis_reg') || '[]');
+            reg.push({ client: n, key: k }); localStorage.setItem('sentis_reg', JSON.stringify(reg)); renderAdmin();
         }
         function delKey(i) {
-            let reg = JSON.parse(localStorage.getItem('sentis_registry') || '[]');
-            reg.splice(i,1); localStorage.setItem('sentis_registry', JSON.stringify(reg)); renderAdmin();
+            let reg = JSON.parse(localStorage.getItem('sentis_reg') || '[]');
+            reg.splice(i,1); localStorage.setItem('sentis_reg', JSON.stringify(reg)); renderAdmin();
         }
 
         function renderGrid() {
-            view = 'grid';
-            let client = localStorage.getItem('sentis_active_client') || 'Workspace';
-            document.getElementById('statusText').innerText = "● " + client;
+            activeEngine = null;
             document.getElementById('workspace').innerHTML = `
-                <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 h-full overflow-y-auto pb-2">
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 h-full overflow-y-auto pb-1">
                     ${Object.keys(mods).map(k=>`
-                        <div onclick="openMod('${k}')" class="neon-border bg-cardbg p-2 rounded cursor-pointer flex flex-col justify-between hover:border-red-500 transition h-[68px]">
-                            <div class="flex justify-between items-center"><i class="fa-solid ${mods[k].icon} text-red-400 text-xs"></i><span class="text-[7px] font-mono bg-black px-1 rounded text-gray-400">${mods[k].tag}</span></div>
-                            <h3 class="text-[10px] font-bold text-white truncate">${mods[k].title}</h3>
+                        <div onclick="openMod('${k}')" class="neon-card p-2 rounded-lg cursor-pointer flex flex-col justify-between h-[55px]">
+                            <div class="flex justify-between items-center"><i class="fa-solid ${mods[k].icon} text-crimson text-[10px]"></i><span class="text-[6px] font-mono bg-black px-1 rounded text-red-300">${mods[k].tag}</span></div>
+                            <h3 class="text-[9px] font-bold text-white truncate">${mods[k].title}</h3>
                         </div>
                     `).join('')}
                 </div>`;
         }
 
         function openMod(k) {
-            view = k;
+            activeEngine = k;
             let m = mods[k];
             document.getElementById('workspace').innerHTML = `
                 <div class="flex flex-col h-full space-y-1.5 overflow-hidden">
                     <div class="flex justify-between items-center shrink-0">
-                        <button onclick="renderGrid()" class="text-[9px] bg-cardbg text-red-300 px-2 py-0.5 rounded border border-red-900"><i class="fa-solid fa-chevron-left mr-1"></i>Back</button>
-                        <span class="text-[9px] font-mono text-red-400 font-bold">${m.title}</span>
+                        <button onclick="renderGrid()" class="text-[9px] bg-panel text-red-300 px-2 py-0.5 rounded border border-crimson/40"><i class="fa-solid fa-chevron-left mr-1"></i>Back</button>
+                        <span class="text-[9px] font-mono text-crimson font-bold">${m.title}</span>
                     </div>
-                    <textarea id="prompt" rows="2" class="w-full bg-black border border-red-900/40 rounded p-1.5 text-[10px] text-gray-200 focus:outline-none focus:border-red-500 resize-none shrink-0" placeholder="Paste input text here..."></textarea>
-                    <button id="runBtn" onclick="runAI()" class="neon-btn text-white text-[10px] font-bold py-1.5 rounded shrink-0">⚡ Synthesize</button>
-                    <div class="flex-1 neon-border bg-cardbg p-2 rounded overflow-y-auto min-h-0">
-                        <div id="out" class="text-[10px] text-gray-300">Awaiting input...</div>
+                    <textarea id="promptInput" rows="2" class="neon-input w-full rounded p-1.5 text-[9px] text-white resize-none shrink-0" placeholder="Paste prompt or notes..."></textarea>
+                    <button id="synthBtn" onclick="runAI()" class="neon-btn text-white text-[9px] font-bold py-1 rounded shrink-0">⚡ Synthesize</button>
+                    <div class="flex-1 neon-card p-1.5 rounded overflow-y-auto min-h-0">
+                        <div id="out" class="text-[9px] text-gray-300">Awaiting input...</div>
                     </div>
                 </div>`;
         }
 
         async function runAI() {
-            let key = localStorage.getItem('sentis_gemini_key');
-            if(!key) { openSetupModal(); return; }
-            let txt = document.getElementById('prompt').value.trim();
+            let key = localStorage.getItem('sentis_gem');
+            if(!key) { openSettings(); return; }
+            let txt = document.getElementById('promptInput').value.trim();
             let out = document.getElementById('out');
+            let btn = document.getElementById('synthBtn');
             if(!txt) { out.innerHTML = "⚠️ Enter text first."; return; }
-            out.innerHTML = "⚡ Synthesizing...";
+            btn.disabled = true; out.innerHTML = "⚡ Synthesizing...";
             try {
                 let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(key)}`, {
                     method: "POST", headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({
-                        systemInstruction: { parts: [{ text: mods[view].sys }] },
+                        systemInstruction: { parts: [{ text: mods[activeEngine].sys }] },
                         contents: [{ parts: [{ text: txt }] }]
                     })
                 });
@@ -179,6 +209,7 @@
                 if(data.candidates) out.innerHTML = marked.parse(data.candidates[0].content.parts[0].text);
                 else out.innerHTML = "❌ Error: " + (data.error?.message || "Failed");
             } catch(e) { out.innerHTML = "❌ Network Error"; }
+            finally { btn.disabled = false; }
         }
     </script>
 </body>
